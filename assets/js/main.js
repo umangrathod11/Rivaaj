@@ -123,9 +123,11 @@ function inquiryOnWhatsApp(productId) {
   const msg = `*RIVAAZ WHOLESALE ENQUIRY*%0A` +
               `Hello Rivaaz Royal Ethnic Wear,%0A` +
               `I am interested in wholesale order for:%0A` +
+              `• *Item Code:* ${encodeURIComponent(product.code)}%0A` +
               `• *Product:* ${encodeURIComponent(product.name)}%0A` +
-              `• *Category:* ${encodeURIComponent(product.category)}%0A` +
-              `• *Price:* ₹${product.price} / Pc%0A` +
+              `• *Main Category:* ${encodeURIComponent(product.category)}%0A` +
+              `• *Sub Category:* ${encodeURIComponent(product.subCategory)}%0A` +
+              `• *Wholesale Price:* ₹${product.price} / Pc%0A` +
               `• *MOQ:* ${encodeURIComponent(product.moq)}%0A` +
               `• *Fabric:* ${encodeURIComponent(product.fabric)}%0A%0A` +
               `Please share available color charts, catalog PDF, and delivery timeframe to my location.`;
@@ -178,9 +180,13 @@ function openQuickView(productId) {
         <div class="detail-thumbnails-row">${thumbHtml}</div>
       </div>
       <div>
-        <span class="badge-tag tag-exclusive" style="margin-bottom: 10px;">${product.tag}</span>
-        <h3 style="font-size: 1.7rem; margin-bottom: 10px; color: var(--c-emerald-950); font-weight: 800;">${product.name}</h3>
-        <p style="font-size: 0.92rem; color: var(--c-gold-600); font-weight: 800; text-transform: uppercase; margin-bottom: 14px;">${product.category}</p>
+        <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 10px; flex-wrap: wrap;">
+          <span class="product-code-badge"><i class="fa-solid fa-barcode"></i> Code: ${product.code}</span>
+          <span class="product-subcat-badge">${product.subCategory}</span>
+          <span class="badge-tag tag-exclusive">${product.tag}</span>
+        </div>
+        <h3 style="font-size: 1.6rem; margin-bottom: 8px; color: var(--c-emerald-950); font-weight: 800;">${product.name}</h3>
+        <p style="font-size: 0.92rem; color: var(--c-gold-600); font-weight: 800; text-transform: uppercase; margin-bottom: 14px;">${product.categoryLabel || product.category}</p>
         
         <div style="background: var(--c-bg-cream); padding: 16px 20px; border-radius: 8px; margin-bottom: 18px;">
           <div style="display: flex; align-items: baseline; gap: 12px;">
@@ -194,7 +200,7 @@ function openQuickView(productId) {
         
         <div style="margin-bottom: 16px;">
           <strong style="font-size: 0.92rem; display: block; margin-bottom: 8px; color: var(--c-emerald-950);">Available Sizes (Set Pack):</strong>
-          <div style="display: flex; gap: 8px;">${sizesHtml}</div>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">${sizesHtml}</div>
         </div>
 
         <div style="font-size: 0.95rem; color: var(--c-text-secondary); margin-bottom: 22px;">
@@ -202,11 +208,8 @@ function openQuickView(productId) {
         </div>
 
         <div style="display: flex; gap: 12px;">
-          <button class="btn btn-gold btn-block" onclick="addToCart('${product.id}', 1); closeQuickView();">
-            <i class="fa-solid fa-file-invoice"></i> Add to Enquiry Sheet
-          </button>
-          <button class="btn btn-whatsapp" onclick="inquiryOnWhatsApp('${product.id}')" title="Chat on WhatsApp">
-            <i class="fa-brands fa-whatsapp"></i>
+          <button class="btn btn-whatsapp btn-block" onclick="inquiryOnWhatsApp('${product.id}')" title="Order on WhatsApp" style="padding: 13px 20px; font-size: 0.95rem; justify-content: center;">
+            <i class="fa-brands fa-whatsapp"></i> Order on WhatsApp
           </button>
         </div>
       </div>
@@ -238,7 +241,7 @@ function createProductCardHTML(product) {
                    product.tag.includes("NEW") ? "tag-new" : "tag-exclusive";
 
   return `
-    <div class="product-card" data-category="${product.category}" data-id="${product.id}">
+    <div class="product-card" data-category="${product.category}" data-subcategory="${product.subCategory}" data-id="${product.id}" data-code="${product.code}">
       <div class="product-image-box">
         <span class="badge-tag ${tagClass} product-badge-pos">${product.tag}</span>
         <button class="product-wishlist-btn ${isWishlisted ? 'active' : ''}" onclick="toggleWishlist('${product.id}', this)" title="Add to Wishlist">
@@ -255,7 +258,11 @@ function createProductCardHTML(product) {
         </div>
       </div>
       <div class="product-info-box">
-        <span class="product-category-meta">${product.categoryLabel}</span>
+        <div class="product-meta-header">
+          <span class="product-code-badge"><i class="fa-solid fa-barcode"></i> ${product.code}</span>
+          <span class="product-subcat-badge">${product.subCategory}</span>
+        </div>
+        <span class="product-category-meta">${product.categoryLabel || product.category}</span>
         <h4 class="product-card-title">
           <a href="product-detail.html?id=${product.id}">${product.name}</a>
         </h4>
@@ -266,11 +273,8 @@ function createProductCardHTML(product) {
         </div>
         <span class="product-moq-badge"><i class="fa-solid fa-box-open"></i> ${product.moq}</span>
         <div class="product-card-actions">
-          <button class="btn-add-cart" onclick="addToCart('${product.id}', 1)">
-            <i class="fa-solid fa-cart-plus"></i> Add Set
-          </button>
-          <button class="btn-card-wa" onclick="inquiryOnWhatsApp('${product.id}')" title="Wholesale WhatsApp Enquiry">
-            <i class="fa-brands fa-whatsapp"></i>
+          <button class="btn-card-wa" onclick="inquiryOnWhatsApp('${product.id}')" title="Order on WhatsApp">
+            <i class="fa-brands fa-whatsapp"></i> Order on WhatsApp
           </button>
         </div>
       </div>
@@ -323,7 +327,7 @@ function downloadCatalogue() {
         <div class="header">
           <div class="logo">RIVAAZ ROYAL ETHNIC WEAR</div>
           <div class="tagline">India's Premium Wholesale Women's Ethnic Hub • Surat, Gujarat</div>
-          <p class="contact-bar">Surat Showroom: 123, Heritage Plaza, MG Road | WhatsApp: +91 98765 43210 | Email: support@rivaaz.in</p>
+          <p class="contact-bar">Surat Showroom: 123, Heritage Plaza, MG Road | WhatsApp: +91 75758 41119 | Email: support@rivaaz.in</p>
           <button onclick="window.print()" style="margin-top: 14px; padding: 12px 28px; background: #0a1c14; color: #dfba73; border: none; font-size: 15px; font-weight: 700; cursor: pointer; border-radius: 6px;">Print / Save as PDF</button>
         </div>
         <div>
@@ -389,29 +393,62 @@ function initMobileNavigation() {
         
         <div class="drawer-dropdown">
           <div class="drawer-link drawer-dropdown-toggle" onclick="toggleDrawerCategory(this)">
-            <span><i class="fa-solid fa-layer-group text-gold"></i> Categories</span>
+            <span><i class="fa-solid fa-layer-group text-gold"></i> Main Brands (Categories)</span>
             <i class="fa-solid fa-chevron-down drawer-arrow"></i>
           </div>
           <div class="drawer-submenu">
-            <a href="shop.html?category=3%20PIS%20KURTI%20ROUND" class="drawer-subitem">
-              <span>3-Piece Kurti Round</span>
+            <a href="shop.html?category=AB" class="drawer-subitem">
+              <span>AB Collection</span>
+              <span class="dropdown-badge">7 Designs</span>
+            </a>
+            <a href="shop.html?category=JD" class="drawer-subitem">
+              <span>JD Collection</span>
               <span class="dropdown-badge">5 Designs</span>
             </a>
-            <a href="shop.html?category=CORD%20SET" class="drawer-subitem">
+            <a href="shop.html?category=KH" class="drawer-subitem">
+              <span>KH Collection</span>
+              <span class="dropdown-badge">9 Designs</span>
+            </a>
+            <a href="shop.html?category=SHIHORI" class="drawer-subitem">
+              <span>Shihori Collection</span>
+              <span class="dropdown-badge">19 Designs</span>
+            </a>
+            <a href="shop.html?category=SL" class="drawer-subitem">
+              <span>SL Collection</span>
+              <span class="dropdown-badge">64 Designs</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="drawer-dropdown">
+          <div class="drawer-link drawer-dropdown-toggle" onclick="toggleDrawerCategory(this)">
+            <span><i class="fa-solid fa-vest-patches text-gold"></i> Style Subcategories</span>
+            <i class="fa-solid fa-chevron-down drawer-arrow"></i>
+          </div>
+          <div class="drawer-submenu">
+            <a href="shop.html?subcategory=3-Piece%20Sets" class="drawer-subitem">
+              <span>3-Piece Sets</span>
+              <span class="dropdown-badge">37 Designs</span>
+            </a>
+            <a href="shop.html?subcategory=Sharara%20Sets" class="drawer-subitem">
+              <span>Sharara Sets</span>
+              <span class="dropdown-badge">7 Designs</span>
+            </a>
+            <a href="shop.html?subcategory=Co-ord%20Sets" class="drawer-subitem">
               <span>Co-ord Sets</span>
-              <span class="dropdown-badge">4 Designs</span>
+              <span class="dropdown-badge">10 Designs</span>
             </a>
-            <a href="shop.html?category=ONE%20PIS" class="drawer-subitem">
-              <span>One Piece / Gowns</span>
-              <span class="dropdown-badge">1 Design</span>
+            <a href="shop.html?subcategory=Straight%20Sets" class="drawer-subitem">
+              <span>Straight Sets</span>
+              <span class="dropdown-badge">8 Designs</span>
             </a>
-            <a href="shop.html?category=SHORT%20SARARA" class="drawer-subitem">
-              <span>Short Sharara Sets</span>
-              <span class="dropdown-badge">1 Design</span>
+            <a href="shop.html?subcategory=Anarkali%20%26%20Round" class="drawer-subitem">
+              <span>Anarkali & Round</span>
+              <span class="dropdown-badge">11 Designs</span>
             </a>
-            <a href="shop.html?category=STET" class="drawer-subitem">
-              <span>Straight / Stet Suits</span>
-              <span class="dropdown-badge">2 Designs</span>
+            <a href="shop.html?subcategory=Short%20%26%20Palazzo" class="drawer-subitem">
+              <span>Short & Palazzo</span>
+              <span class="dropdown-badge">14 Designs</span>
             </a>
             <a href="shop.html" class="drawer-subitem" style="color: var(--c-gold-600); font-weight: 700; margin-top: 6px;">
               <span>View Full Catalog &rarr;</span>

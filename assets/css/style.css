@@ -1343,21 +1343,28 @@ h1, h2, h3, h4, h5, h6, .font-serif {
 }
 
 .btn-card-wa {
-  width: 44px;
-  height: 44px;
+  flex: 1;
+  width: 100%;
   background: #25d366;
   color: #ffffff;
   border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.25rem;
+  gap: 8px;
+  padding: 11px 16px;
+  font-size: 0.92rem;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
   transition: all var(--transition-fast);
+  box-shadow: 0 4px 14px rgba(37, 211, 102, 0.25);
 }
 
 .btn-card-wa:hover {
   background: #1ebc59;
-  transform: scale(1.06);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(37, 211, 102, 0.35);
 }
 
 /* ==========================================================================
@@ -3061,17 +3068,11 @@ textarea.form-control {
     gap: 6px;
   }
 
-  .btn-add-cart {
-    padding: 8px 6px;
-    font-size: 0.78rem;
-    gap: 4px;
-  }
-
   .btn-card-wa {
-    width: 36px;
-    height: 36px;
-    font-size: 1.1rem;
-    flex-shrink: 0;
+    width: 100%;
+    padding: 9px 10px;
+    font-size: 0.82rem;
+    gap: 6px;
   }
 
   .product-wishlist-btn {
@@ -3344,5 +3345,89 @@ textarea.form-control {
     font-size: 0.72rem;
     padding: 7px 4px;
   }
+}
+
+/* ==========================================================================
+   PRODUCT ITEM CODE & SUBCATEGORY STYLES (2026 UPDATE)
+   ========================================================================== */
+.product-meta-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+
+.product-code-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  background: #0a1c14;
+  color: #dfba73;
+  padding: 3px 8px;
+  border-radius: 4px;
+  border: 1px solid rgba(197, 157, 95, 0.4);
+}
+
+.product-subcat-badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #143527;
+  background: #f4ede0;
+  padding: 2px 7px;
+  border-radius: 4px;
+  border: 1px solid #dfba73;
+}
+
+.subcat-filter-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.subcat-filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 20px;
+  background: #fff;
+  border: 1px solid var(--c-border-subtle);
+  color: var(--c-text-primary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.subcat-filter-chip:hover {
+  border-color: var(--c-gold-500);
+  background: var(--c-bg-cream);
+  color: var(--c-emerald-950);
+}
+
+.subcat-filter-chip.active {
+  background: var(--c-emerald-900);
+  color: #dfba73;
+  border-color: var(--c-gold-400);
+  box-shadow: 0 2px 8px rgba(10, 28, 20, 0.2);
+}
+
+.subcat-filter-chip .chip-count {
+  font-size: 0.72rem;
+  background: rgba(255, 255, 255, 0.25);
+  padding: 1px 6px;
+  border-radius: 10px;
+  font-weight: 700;
+}
+
+.subcat-filter-chip.active .chip-count {
+  background: rgba(223, 186, 115, 0.25);
+  color: #fff;
 }
 
