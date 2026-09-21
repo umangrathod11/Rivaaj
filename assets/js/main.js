@@ -49,21 +49,21 @@ function showToast(message, icon = "fa-check-circle") {
   }, 3200);
 }
 
-// Update Cart and Wishlist Count in Header
+// Update Cart and Wishlist Count in Header & Bottom Nav
 function updateHeaderBadges() {
   const cart = getCart();
   const wishlist = getWishlist();
   
   const totalCartSets = cart.reduce((sum, item) => sum + (item.sets || 1), 0);
   
-  const cartBadge = document.querySelectorAll(".header-cart-badge");
-  cartBadge.forEach(el => {
+  const cartBadges = document.querySelectorAll(".header-cart-badge, .mobile-cart-badge");
+  cartBadges.forEach(el => {
     el.textContent = totalCartSets;
     el.style.display = totalCartSets > 0 ? "flex" : "none";
   });
 
-  const wishlistBadge = document.querySelectorAll(".header-wishlist-badge");
-  wishlistBadge.forEach(el => {
+  const wishlistBadges = document.querySelectorAll(".header-wishlist-badge, .mobile-wishlist-badge");
+  wishlistBadges.forEach(el => {
     el.textContent = wishlist.length;
     el.style.display = wishlist.length > 0 ? "flex" : "none";
   });
@@ -71,7 +71,7 @@ function updateHeaderBadges() {
 
 // Add to Cart / Inquiry
 function addToCart(productId, setsCount = 1) {
-  const product = RIVAAZ_PRODUCTS.find(p => p.id === productId);
+  const product = (typeof getProductById === 'function' ? getProductById(productId) : null) || RIVAAZ_PRODUCTS.find(p => p.id === productId);
   if (!product) return;
 
   const cart = getCart();
@@ -82,26 +82,26 @@ function addToCart(productId, setsCount = 1) {
   } else {
     cart.push({
       id: product.id,
-      name: product.name,
+      name: product.title || product.name,
       category: product.category,
       price: product.price,
-      image: product.mainImage,
+      image: (product.images && product.images[0]) || product.mainImage,
       fabric: product.fabric,
-      moq: product.moq,
+      moq: product.moq || '1 Set (4 Pcs)',
       sets: setsCount,
-      pcsPerSet: 4 // Standard wholesale set is 4 pcs
+      pcsPerSet: 4
     });
   }
 
   saveCart(cart);
-  showToast(`Added ${setsCount} Set(s) of "${product.name}" to Wholesale Enquiry Sheet!`);
+  showToast(`Added ${setsCount} Set(s) of "${product.title || product.name}" to Wholesale Enquiry Sheet!`);
 }
 
 // Toggle Wishlist
 function toggleWishlist(productId, btnElement) {
   const wishlist = getWishlist();
   const index = wishlist.indexOf(productId);
-  const product = RIVAAZ_PRODUCTS.find(p => p.id === productId);
+  const product = (typeof getProductById === 'function' ? getProductById(productId) : null) || RIVAAZ_PRODUCTS.find(p => p.id === productId);
 
   if (index > -1) {
     wishlist.splice(index, 1);
@@ -110,40 +110,43 @@ function toggleWishlist(productId, btnElement) {
   } else {
     wishlist.push(productId);
     if (btnElement) btnElement.classList.add("active");
-    showToast(`Added "${product ? product.name : 'Item'}" to Wishlist!`, "fa-heart");
+    showToast(`Added "${product ? (product.title || product.name) : 'Item'}" to Wishlist!`, "fa-heart");
   }
   saveWishlist(wishlist);
 }
 
 // WhatsApp Direct Inquiry for Single Product
 function inquiryOnWhatsApp(productId) {
-  const product = RIVAAZ_PRODUCTS.find(p => p.id === productId);
+  const product = (typeof getProductById === 'function' ? getProductById(productId) : null) || RIVAAZ_PRODUCTS.find(p => p.id === productId);
   if (!product) return;
+
+  const waNumber = (typeof RIVAAZ_CONFIG !== 'undefined' && RIVAAZ_CONFIG.whatsappNumber) ? RIVAAZ_CONFIG.whatsappNumber : "917575841119";
 
   const msg = `*RIVAAZ WHOLESALE ENQUIRY*%0A` +
               `Hello Rivaaz Royal Ethnic Wear,%0A` +
               `I am interested in wholesale order for:%0A` +
               `• *Item Code:* ${encodeURIComponent(product.code)}%0A` +
-              `• *Product:* ${encodeURIComponent(product.name)}%0A` +
+              `• *Product:* ${encodeURIComponent(product.title || product.name)}%0A` +
               `• *Main Category:* ${encodeURIComponent(product.category)}%0A` +
-              `• *Sub Category:* ${encodeURIComponent(product.subCategory)}%0A` +
+              `• *Brand / Collection:* ${encodeURIComponent(product.brandName || product.brand)}%0A` +
               `• *Wholesale Price:* ₹${product.price} / Pc%0A` +
-              `• *MOQ:* ${encodeURIComponent(product.moq)}%0A` +
+              `• *MOQ:* ${encodeURIComponent(product.moq || '1 Set (4 Pcs)')}%0A` +
               `• *Fabric:* ${encodeURIComponent(product.fabric)}%0A%0A` +
               `Please share available color charts, catalog PDF, and delivery timeframe to my location.`;
 
-  window.open(`https://wa.me/${RIVAAZ_CONFIG.whatsappNumber}?text=${msg}`, "_blank");
+  window.open(`https://wa.me/${waNumber}?text=${msg}`, "_blank");
 }
 
 // WhatsApp General Contact
 function openWhatsAppChat(customMessage = "") {
+  const waNumber = (typeof RIVAAZ_CONFIG !== 'undefined' && RIVAAZ_CONFIG.whatsappNumber) ? RIVAAZ_CONFIG.whatsappNumber : "917575841119";
   const defaultMsg = customMessage || "Hello Rivaaz Royal Ethnic Wear, I am a boutique owner / retailer interested in women ethnic wear wholesale catalog.";
-  window.open(`https://wa.me/${RIVAAZ_CONFIG.whatsappNumber}?text=${encodeURIComponent(defaultMsg)}`, "_blank");
+  window.open(`https://wa.me/${waNumber}?text=${encodeURIComponent(defaultMsg)}`, "_blank");
 }
 
 // Quick View Modal
 function openQuickView(productId) {
-  const product = RIVAAZ_PRODUCTS.find(p => p.id === productId);
+  const product = (typeof getProductById === 'function' ? getProductById(productId) : null) || RIVAAZ_PRODUCTS.find(p => p.id === productId);
   if (!product) return;
 
   let modal = document.getElementById("quickViewModal");
@@ -163,47 +166,51 @@ function openQuickView(productId) {
     });
   }
 
-  const thumbHtml = product.images.map((img, i) => `
+  const productImages = (product.images && product.images.length > 0) ? product.images : [product.mainImage || 'assets/images/placeholder.jpg'];
+  const mainImgSrc = productImages[0];
+
+  const thumbHtml = productImages.map((img, i) => `
     <div class="detail-thumb-item ${i === 0 ? 'active' : ''}" onclick="changeModalMainImg(this, '${img}')">
-      <img src="${img}" alt="${product.name}">
+      <img src="${img}" alt="${product.title || product.name}">
     </div>
   `).join('');
 
-  const sizesHtml = product.sizes.map(s => `<span class="badge-tag" style="background:#f4ede0; color:#143527; border-color:#dfba73;">${s}</span>`).join(' ');
+  const sizesArray = Array.isArray(product.sizes) ? product.sizes : ['M', 'L', 'XL', 'XXL'];
+  const sizesHtml = sizesArray.map(s => `<span class="badge-tag" style="background:#f4ede0; color:#143527; border-color:#dfba73;">${s}</span>`).join(' ');
 
   document.getElementById("quickViewContent").innerHTML = `
     <div style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 32px; align-items: start; font-family: 'Poppins', sans-serif;">
       <div>
-        <div class="detail-main-img-box" style="height: 400px;">
-          <img id="modalMainImage" src="${product.mainImage}" alt="${product.name}">
+        <div class="detail-main-img-box" style="height: 380px;">
+          <img id="modalMainImage" src="${mainImgSrc}" alt="${product.title || product.name}">
         </div>
         <div class="detail-thumbnails-row">${thumbHtml}</div>
       </div>
       <div>
         <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 10px; flex-wrap: wrap;">
           <span class="product-code-badge"><i class="fa-solid fa-barcode"></i> Code: ${product.code}</span>
-          <span class="product-subcat-badge">${product.subCategory}</span>
-          <span class="badge-tag tag-exclusive">${product.tag}</span>
+          <span class="product-subcat-badge">${product.category}</span>
+          <span class="badge-tag tag-exclusive">${product.badge || product.tag || 'HOT'}</span>
         </div>
-        <h3 style="font-size: 1.6rem; margin-bottom: 8px; color: var(--c-emerald-950); font-weight: 800;">${product.name}</h3>
-        <p style="font-size: 0.92rem; color: var(--c-gold-600); font-weight: 800; text-transform: uppercase; margin-bottom: 14px;">${product.categoryLabel || product.category}</p>
+        <h3 style="font-size: 1.5rem; margin-bottom: 6px; color: var(--c-emerald-950); font-weight: 800;">${product.title || product.name}</h3>
+        <p style="font-size: 0.88rem; color: var(--c-gold-600); font-weight: 800; text-transform: uppercase; margin-bottom: 14px;">${product.brandName} • ${product.category}</p>
         
         <div style="background: var(--c-bg-cream); padding: 16px 20px; border-radius: 8px; margin-bottom: 18px;">
           <div style="display: flex; align-items: baseline; gap: 12px;">
             <span style="font-size: 1.85rem; font-weight: 900; color: var(--c-emerald-950);">₹${product.price.toLocaleString('en-IN')} <span style="font-size: 0.95rem; font-weight: 600; color: var(--c-text-secondary);">/ Pc</span></span>
-            <span style="text-decoration: line-through; color: var(--c-text-muted); font-size: 1.05rem; font-weight: 500;">₹${product.mrp.toLocaleString('en-IN')}</span>
+            <span style="text-decoration: line-through; color: var(--c-text-muted); font-size: 1.05rem; font-weight: 500;">₹${(product.mrp || product.originalPrice).toLocaleString('en-IN')}</span>
           </div>
-          <p style="font-size: 0.9rem; color: #143527; font-weight: 700; margin-top: 6px;"><i class="fa-solid fa-boxes-stacked text-gold"></i> MOQ: ${product.moq}</p>
+          <p style="font-size: 0.9rem; color: #143527; font-weight: 700; margin-top: 6px;"><i class="fa-solid fa-boxes-stacked text-gold"></i> MOQ: ${product.moq || '1 Set (4 Pcs)'}</p>
         </div>
 
-        <p style="font-size: 0.98rem; color: var(--c-text-secondary); line-height: 1.7; margin-bottom: 16px;">${product.description}</p>
+        <p style="font-size: 0.92rem; color: var(--c-text-secondary); line-height: 1.6; margin-bottom: 16px;">${product.description}</p>
         
         <div style="margin-bottom: 16px;">
-          <strong style="font-size: 0.92rem; display: block; margin-bottom: 8px; color: var(--c-emerald-950);">Available Sizes (Set Pack):</strong>
+          <strong style="font-size: 0.88rem; display: block; margin-bottom: 8px; color: var(--c-emerald-950);">Available Sizes (Set Pack):</strong>
           <div style="display: flex; gap: 8px; flex-wrap: wrap;">${sizesHtml}</div>
         </div>
 
-        <div style="font-size: 0.95rem; color: var(--c-text-secondary); margin-bottom: 22px;">
+        <div style="font-size: 0.92rem; color: var(--c-text-secondary); margin-bottom: 20px;">
           <strong style="color: var(--c-emerald-950);">Fabric:</strong> ${product.fabric}
         </div>
 
@@ -236,18 +243,22 @@ function changeModalMainImg(thumbElem, imgUrl) {
 function createProductCardHTML(product) {
   const wishlist = getWishlist();
   const isWishlisted = wishlist.includes(product.id);
-  const tagClass = product.tag.includes("HOT") ? "tag-hot" :
-                   product.tag.includes("TREND") ? "tag-trending" :
-                   product.tag.includes("NEW") ? "tag-new" : "tag-exclusive";
+  const badgeText = product.badge || product.tag || "HOT SELLER";
+  const tagClass = badgeText.includes("HOT") ? "tag-hot" :
+                   badgeText.includes("TREND") ? "tag-trending" :
+                   badgeText.includes("NEW") ? "tag-new" : "tag-exclusive";
+
+  const imgSrc = (product.images && product.images[0]) || product.mainImage || 'assets/images/placeholder.jpg';
+  const mrpVal = product.mrp || product.originalPrice || Math.round(product.price * 1.35);
 
   return `
-    <div class="product-card" data-category="${product.category}" data-subcategory="${product.subCategory}" data-id="${product.id}" data-code="${product.code}">
+    <div class="product-card" data-category="${product.category}" data-brand="${product.brand}" data-id="${product.id}" data-code="${product.code}">
       <div class="product-image-box">
-        <span class="badge-tag ${tagClass} product-badge-pos">${product.tag}</span>
+        <span class="badge-tag ${tagClass} product-badge-pos">${badgeText}</span>
         <button class="product-wishlist-btn ${isWishlisted ? 'active' : ''}" onclick="toggleWishlist('${product.id}', this)" title="Add to Wishlist">
           <i class="fa-solid fa-heart"></i>
         </button>
-        <img src="${product.mainImage}" alt="${product.name}" loading="lazy">
+        <img src="${imgSrc}" alt="${product.title || product.name}" loading="lazy">
         <div class="product-overlay-actions">
           <button class="quick-view-btn" onclick="openQuickView('${product.id}')">
             <i class="fa-solid fa-eye text-gold"></i> Quick View
@@ -260,18 +271,18 @@ function createProductCardHTML(product) {
       <div class="product-info-box">
         <div class="product-meta-header">
           <span class="product-code-badge"><i class="fa-solid fa-barcode"></i> ${product.code}</span>
-          <span class="product-subcat-badge">${product.subCategory}</span>
+          <span class="product-subcat-badge">${product.brand}</span>
         </div>
-        <span class="product-category-meta">${product.categoryLabel || product.category}</span>
+        <span class="product-category-meta">${product.category}</span>
         <h4 class="product-card-title">
-          <a href="product-detail.html?id=${product.id}">${product.name}</a>
+          <a href="product-detail.html?id=${product.id}">${product.title || product.name}</a>
         </h4>
         <p class="product-card-fabric">${product.fabric}</p>
         <div class="product-price-row">
           <div class="product-price-current">₹${product.price.toLocaleString('en-IN')} <span>/ Pc</span></div>
-          <div class="product-price-mrp">₹${product.mrp.toLocaleString('en-IN')}</div>
+          <div class="product-price-mrp">₹${mrpVal.toLocaleString('en-IN')}</div>
         </div>
-        <span class="product-moq-badge"><i class="fa-solid fa-box-open"></i> ${product.moq}</span>
+        <span class="product-moq-badge"><i class="fa-solid fa-box-open"></i> ${product.moq || '1 Set (4 Pcs)'}</span>
         <div class="product-card-actions">
           <button class="btn-card-wa" onclick="inquiryOnWhatsApp('${product.id}')" title="Order on WhatsApp">
             <i class="fa-brands fa-whatsapp"></i> Order on WhatsApp
@@ -286,7 +297,6 @@ function createProductCardHTML(product) {
 function downloadCatalogue() {
   showToast("Preparing Wholesale Catalog PDF with Latest Surat Collections...", "fa-file-pdf");
   setTimeout(() => {
-    // Generate formatted printable HTML catalogue or direct PDF trigger
     const printWin = window.open("", "_blank");
     if (!printWin) {
       alert("Popup blocked! Please allow popups to view the PDF catalogue.");
@@ -295,13 +305,13 @@ function downloadCatalogue() {
     
     let catalogItems = RIVAAZ_PRODUCTS.map(p => `
       <div style="break-inside: avoid; border: 1.5px solid #c59d5f; border-radius: 10px; padding: 18px; margin-bottom: 24px; display: flex; gap: 24px; align-items: center; background: #faf8f5;">
-        <img src="${p.mainImage}" style="width: 150px; height: 195px; object-fit: cover; border-radius: 8px;" />
+        <img src="${(p.images && p.images[0]) || p.mainImage}" style="width: 150px; height: 195px; object-fit: cover; border-radius: 8px;" />
         <div style="flex: 1;">
-          <span style="font-size: 13px; font-weight: 800; color: #143527; background: #f0e6d2; padding: 4px 10px; border-radius: 4px; text-transform: uppercase;">${p.category}</span>
-          <h2 style="font-size: 22px; margin: 8px 0; color: #0a1c14; font-weight: 800;">${p.name}</h2>
+          <span style="font-size: 13px; font-weight: 800; color: #143527; background: #f0e6d2; padding: 4px 10px; border-radius: 4px; text-transform: uppercase;">${p.category} • ${p.brandName}</span>
+          <h2 style="font-size: 22px; margin: 8px 0; color: #0a1c14; font-weight: 800;">${p.title || p.name} (Code: ${p.code})</h2>
           <p style="font-size: 15px; color: #444; margin-bottom: 6px;"><strong>Fabric:</strong> ${p.fabric}</p>
-          <p style="font-size: 15px; color: #444; margin-bottom: 6px;"><strong>Sizes Pack:</strong> ${p.sizes.join(', ')}</p>
-          <p style="font-size: 15px; color: #444; margin-bottom: 8px;"><strong>MOQ:</strong> ${p.moq}</p>
+          <p style="font-size: 15px; color: #444; margin-bottom: 6px;"><strong>Sizes Pack:</strong> ${(p.sizes || ['M','L','XL','XXL']).join(', ')}</p>
+          <p style="font-size: 15px; color: #444; margin-bottom: 8px;"><strong>MOQ:</strong> ${p.moq || '1 Set (4 Pcs)'}</p>
           <div style="font-size: 24px; font-weight: 800; color: #0a1c14;">Wholesale Rate: ₹${p.price.toLocaleString('en-IN')} / Pc</div>
         </div>
       </div>
@@ -340,26 +350,6 @@ function downloadCatalogue() {
   }, 1000);
 }
 
-// Update Cart and Wishlist Count in Header & Bottom Nav
-function updateHeaderBadges() {
-  const cart = getCart();
-  const wishlist = getWishlist();
-  
-  const totalCartSets = cart.reduce((sum, item) => sum + (item.sets || 1), 0);
-  
-  const cartBadges = document.querySelectorAll(".header-cart-badge, .mobile-cart-badge");
-  cartBadges.forEach(el => {
-    el.textContent = totalCartSets;
-    el.style.display = totalCartSets > 0 ? "flex" : "none";
-  });
-
-  const wishlistBadges = document.querySelectorAll(".header-wishlist-badge, .mobile-wishlist-badge");
-  wishlistBadges.forEach(el => {
-    el.textContent = wishlist.length;
-    el.style.display = wishlist.length > 0 ? "flex" : "none";
-  });
-}
-
 // Dedicated Mobile Navigation Drawer Controller
 function initMobileNavigation() {
   let backdrop = document.querySelector(".mobile-nav-backdrop");
@@ -374,6 +364,25 @@ function initMobileNavigation() {
     drawer = document.createElement("div");
     drawer.id = "rivaazMobileDrawer";
     drawer.className = "mobile-nav-drawer";
+    
+    // Dynamic Main Categories
+    const catList = typeof RIVAAZ_CATEGORIES !== 'undefined' ? RIVAAZ_CATEGORIES : [];
+    const brandList = typeof RIVAAZ_BRANDS !== 'undefined' ? RIVAAZ_BRANDS : [];
+
+    const categoriesHtml = catList.map(c => `
+      <a href="shop.html?category=${encodeURIComponent(c.id)}" class="drawer-subitem">
+        <span>${c.name}</span>
+        <span class="dropdown-badge">${c.count}</span>
+      </a>
+    `).join('');
+
+    const brandsHtml = brandList.map(b => `
+      <a href="shop.html?brand=${encodeURIComponent(b.code)}" class="drawer-subitem">
+        <span>${b.name}</span>
+        <span class="dropdown-badge">${b.count}</span>
+      </a>
+    `).join('');
+
     drawer.innerHTML = `
       <div class="drawer-header">
         <div style="display: flex; align-items: center; gap: 10px;">
@@ -391,68 +400,28 @@ function initMobileNavigation() {
       <div class="drawer-body">
         <a href="index.html" class="drawer-link"><i class="fa-solid fa-house text-gold"></i> Home</a>
         
+        <!-- Main Categories -->
         <div class="drawer-dropdown">
           <div class="drawer-link drawer-dropdown-toggle" onclick="toggleDrawerCategory(this)">
-            <span><i class="fa-solid fa-layer-group text-gold"></i> Main Brands (Categories)</span>
+            <span><i class="fa-solid fa-vest-patches text-gold"></i> Main Categories</span>
             <i class="fa-solid fa-chevron-down drawer-arrow"></i>
           </div>
           <div class="drawer-submenu">
-            <a href="shop.html?category=AB" class="drawer-subitem">
-              <span>AB Collection</span>
-              <span class="dropdown-badge">7 Designs</span>
-            </a>
-            <a href="shop.html?category=JD" class="drawer-subitem">
-              <span>JD Collection</span>
-              <span class="dropdown-badge">5 Designs</span>
-            </a>
-            <a href="shop.html?category=KH" class="drawer-subitem">
-              <span>KH Collection</span>
-              <span class="dropdown-badge">9 Designs</span>
-            </a>
-            <a href="shop.html?category=SHIHORI" class="drawer-subitem">
-              <span>Shihori Collection</span>
-              <span class="dropdown-badge">19 Designs</span>
-            </a>
-            <a href="shop.html?category=SL" class="drawer-subitem">
-              <span>SL Collection</span>
-              <span class="dropdown-badge">64 Designs</span>
+            ${categoriesHtml}
+            <a href="shop.html" class="drawer-subitem" style="color: var(--c-gold-600); font-weight: 700; margin-top: 6px;">
+              <span>View All Categories &rarr;</span>
             </a>
           </div>
         </div>
 
+        <!-- Brand Collections -->
         <div class="drawer-dropdown">
           <div class="drawer-link drawer-dropdown-toggle" onclick="toggleDrawerCategory(this)">
-            <span><i class="fa-solid fa-vest-patches text-gold"></i> Style Subcategories</span>
+            <span><i class="fa-solid fa-layer-group text-gold"></i> Brand Collections</span>
             <i class="fa-solid fa-chevron-down drawer-arrow"></i>
           </div>
           <div class="drawer-submenu">
-            <a href="shop.html?subcategory=3-Piece%20Sets" class="drawer-subitem">
-              <span>3-Piece Sets</span>
-              <span class="dropdown-badge">37 Designs</span>
-            </a>
-            <a href="shop.html?subcategory=Sharara%20Sets" class="drawer-subitem">
-              <span>Sharara Sets</span>
-              <span class="dropdown-badge">7 Designs</span>
-            </a>
-            <a href="shop.html?subcategory=Co-ord%20Sets" class="drawer-subitem">
-              <span>Co-ord Sets</span>
-              <span class="dropdown-badge">10 Designs</span>
-            </a>
-            <a href="shop.html?subcategory=Straight%20Sets" class="drawer-subitem">
-              <span>Straight Sets</span>
-              <span class="dropdown-badge">8 Designs</span>
-            </a>
-            <a href="shop.html?subcategory=Anarkali%20%26%20Round" class="drawer-subitem">
-              <span>Anarkali & Round</span>
-              <span class="dropdown-badge">11 Designs</span>
-            </a>
-            <a href="shop.html?subcategory=Short%20%26%20Palazzo" class="drawer-subitem">
-              <span>Short & Palazzo</span>
-              <span class="dropdown-badge">14 Designs</span>
-            </a>
-            <a href="shop.html" class="drawer-subitem" style="color: var(--c-gold-600); font-weight: 700; margin-top: 6px;">
-              <span>View Full Catalog &rarr;</span>
-            </a>
+            ${brandsHtml}
           </div>
         </div>
 
@@ -549,7 +518,6 @@ function initShopMobileFilter() {
   const filterSidebar = document.querySelector(".filter-sidebar");
   if (!filterSidebar) return;
 
-  // Add close button at top of sidebar if not exists
   if (!filterSidebar.querySelector(".filter-sidebar-close")) {
     const closeHeader = document.createElement("div");
     closeHeader.className = "filter-sidebar-close";
@@ -569,7 +537,6 @@ function openShopMobileFilter() {
     backdrop.classList.add("active");
     document.body.style.overflow = "hidden";
     
-    // Close sidebar on backdrop click
     const clickHandler = () => {
       closeShopMobileFilter();
       backdrop.removeEventListener("click", clickHandler);
@@ -644,7 +611,6 @@ function initHeroSlider() {
     startHeroSlideInterval();
   });
 
-  // Mobile Touch Swipe support
   let touchStartX = 0;
   let touchEndX = 0;
 
@@ -660,11 +626,11 @@ function initHeroSlider() {
   function handleSwipe() {
     const swipeThreshold = 50;
     if (touchEndX < touchStartX - swipeThreshold) {
-      nextHeroSlide(); // Swiped left
+      nextHeroSlide();
       resetHeroSlideInterval();
     }
     if (touchEndX > touchStartX + swipeThreshold) {
-      prevHeroSlide(); // Swiped right
+      prevHeroSlide();
       resetHeroSlideInterval();
     }
   }
@@ -678,7 +644,6 @@ document.addEventListener("DOMContentLoaded", () => {
   initShopMobileFilter();
   initHeroSlider();
 
-  // Newsletter form submission
   const newsletterForms = document.querySelectorAll(".newsletter-form");
   newsletterForms.forEach(form => {
     form.addEventListener("submit", (e) => {
@@ -691,4 +656,3 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 });
-
