@@ -21,7 +21,7 @@ console.log(`- Total Live Designs: ${RIVAAZ_PRODUCTS.length}`);
 console.log(`- Total Main Categories: ${RIVAAZ_CATEGORIES.length}`);
 console.log(`- Total Brand Collections: ${RIVAAZ_BRANDS.length}`);
 
-console.log(`\n2. MAIN CATEGORIES (GARMENT STYLES):`);
+console.log(`\n2. 7 MAIN CATEGORIES:`);
 RIVAAZ_CATEGORIES.forEach(c => {
   const prods = getProductsByCategory(c.id);
   console.log(`  • ${c.name} (${c.id}) -> ${prods.length} Designs | Cover: ${c.image}`);
@@ -50,13 +50,15 @@ if (missing === 0) {
 }
 
 console.log(`\n5. LOOKUP TESTS:`);
-const testCord = getProductById('sl-1055-co-ord-sets-1') || RIVAAZ_PRODUCTS.find(p => p.category === 'Co-ord Sets');
-console.log(`  • Product Detail Lookup: ${testCord.title} -> Code: ${testCord.code}, Price: ₹${testCord.price}`);
-console.log(`  • Lookup by Code (${testCord.code}): ${getProductById(testCord.code) ? 'PASSED' : 'FAILED'}`);
+const testCord = getProductsByCategory('cord-set')[0];
+if (testCord) {
+  console.log(`  • Product Detail Lookup: ${testCord.title} -> Code: ${testCord.code}, Price: ₹${testCord.price}`);
+  console.log(`  • Lookup by Code (${testCord.code}): ${getProductById(testCord.code) ? 'PASSED' : 'FAILED'}`);
+}
 
 console.log(`\n6. SEARCH TESTS:`);
 console.log(`  • Search 'cord': ${searchProducts('cord').length} items found`);
-console.log(`  • Search 'sharara': ${searchProducts('sharara').length} items found`);
+console.log(`  • Search 'sarara': ${searchProducts('sarara').length} items found`);
 console.log(`  • Search 'cotton': ${searchProducts('cotton').length} items found`);
 
 console.log('\n====================================');

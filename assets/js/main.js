@@ -293,9 +293,9 @@ function createProductCardHTML(product) {
   `;
 }
 
-// Download PDF Catalogue Action
+// Download PDF Catalogue Action (Large High-Resolution Layout)
 function downloadCatalogue() {
-  showToast("Preparing Wholesale Catalog PDF with Latest Surat Collections...", "fa-file-pdf");
+  showToast("Preparing Wholesale Catalog PDF with High-Res Images...", "fa-file-pdf");
   setTimeout(() => {
     const printWin = window.open("", "_blank");
     if (!printWin) {
@@ -303,51 +303,115 @@ function downloadCatalogue() {
       return;
     }
     
-    let catalogItems = RIVAAZ_PRODUCTS.map(p => `
-      <div style="break-inside: avoid; border: 1.5px solid #c59d5f; border-radius: 10px; padding: 18px; margin-bottom: 24px; display: flex; gap: 24px; align-items: center; background: #faf8f5;">
-        <img src="${(p.images && p.images[0]) || p.mainImage}" style="width: 150px; height: 195px; object-fit: cover; border-radius: 8px;" />
-        <div style="flex: 1;">
-          <span style="font-size: 13px; font-weight: 800; color: #143527; background: #f0e6d2; padding: 4px 10px; border-radius: 4px; text-transform: uppercase;">${p.category} • ${p.brandName}</span>
-          <h2 style="font-size: 22px; margin: 8px 0; color: #0a1c14; font-weight: 800;">${p.title || p.name} (Code: ${p.code})</h2>
-          <p style="font-size: 15px; color: #444; margin-bottom: 6px;"><strong>Fabric:</strong> ${p.fabric}</p>
-          <p style="font-size: 15px; color: #444; margin-bottom: 6px;"><strong>Sizes Pack:</strong> ${(p.sizes || ['M','L','XL','XXL']).join(', ')}</p>
-          <p style="font-size: 15px; color: #444; margin-bottom: 8px;"><strong>MOQ:</strong> ${p.moq || '1 Set (4 Pcs)'}</p>
-          <div style="font-size: 24px; font-weight: 800; color: #0a1c14;">Wholesale Rate: ₹${p.price.toLocaleString('en-IN')} / Pc</div>
+    let catalogItems = RIVAAZ_PRODUCTS.map((p, idx) => {
+      const mainImg = (p.images && p.images[0]) || p.mainImage;
+      const extraImgs = (p.images && p.images.slice(1, 4)) || [];
+      const extraImgsHtml = extraImgs.length > 0 ? `
+        <div style="display: flex; gap: 6px; margin-top: 8px;">
+          ${extraImgs.map(img => `<img src="${img}" style="width: 58px; height: 72px; object-fit: cover; object-position: top center; border-radius: 4px; border: 1px solid #dfba73;" />`).join('')}
         </div>
-      </div>
-    `).join('');
+      ` : '';
+
+      return `
+        <div style="break-inside: avoid; page-break-inside: avoid; border: 1.5px solid #c59d5f; border-radius: 12px; padding: 22px; margin-bottom: 26px; display: flex; gap: 28px; align-items: stretch; background: #ffffff; box-shadow: 0 4px 15px rgba(10, 28, 20, 0.06);">
+          <div style="width: 270px; min-width: 270px; display: flex; flex-direction: column;">
+            <img src="${mainImg}" style="width: 100%; height: 340px; object-fit: cover; object-position: top center; border-radius: 8px; border: 1.5px solid #c59d5f;" />
+            ${extraImgsHtml}
+          </div>
+          <div style="flex: 1; display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <span style="font-size: 13px; font-weight: 800; color: #0a1c14; background: #f0e6d2; padding: 5px 12px; border-radius: 4px; text-transform: uppercase; border: 1px solid #c59d5f;">${p.category} • ${p.brandName}</span>
+                <span style="font-size: 12px; font-weight: 700; color: #ffffff; background: #0a1c14; padding: 4px 10px; border-radius: 4px;">Item #${idx + 1} • Surat Direct</span>
+              </div>
+              <h2 style="font-size: 23px; margin: 6px 0 14px; color: #0a1c14; font-weight: 800; line-height: 1.3;">
+                ${p.title || p.name} 
+                <span style="font-size: 17px; color: #666; font-weight: 600;">(Code: ${p.code})</span>
+              </h2>
+              
+              <table style="width: 100%; border-collapse: collapse; font-size: 14.5px; margin-bottom: 14px;">
+                <tr style="border-bottom: 1px solid #f0e6d2;">
+                  <td style="padding: 7px 0; color: #555; font-weight: 600; width: 130px;">Fabric:</td>
+                  <td style="padding: 7px 0; color: #111; font-weight: 700;">${p.fabric}</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #f0e6d2;">
+                  <td style="padding: 7px 0; color: #555; font-weight: 600;">Work / Style:</td>
+                  <td style="padding: 7px 0; color: #111; font-weight: 700;">${p.work || 'Designer Embroidery & Handwork'}</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #f0e6d2;">
+                  <td style="padding: 7px 0; color: #555; font-weight: 600;">Sizes Pack:</td>
+                  <td style="padding: 7px 0; color: #111; font-weight: 700;">${(p.sizes || ['M','L','XL','XXL']).join(', ')}</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #f0e6d2;">
+                  <td style="padding: 7px 0; color: #555; font-weight: 600;">Min Order (MOQ):</td>
+                  <td style="padding: 7px 0; color: #111; font-weight: 700;">${p.moq || '1 Set (4 Pcs: M-L-XL-XXL)'}</td>
+                </tr>
+              </table>
+            </div>
+
+            <div style="background: #faf6f0; border: 1.5px solid #e0d0b8; border-radius: 8px; padding: 14px 20px; display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
+              <div>
+                <div style="font-size: 13px; color: #666; font-weight: 600; text-transform: uppercase;">Wholesale Rate:</div>
+                <div style="font-size: 26px; font-weight: 900; color: #0a1c14;">₹${p.price.toLocaleString('en-IN')} <span style="font-size: 14px; font-weight: 600; color: #666;">/ Pc</span></div>
+              </div>
+              <div style="text-align: right;">
+                <div style="font-size: 12px; color: #666; text-transform: uppercase;">Set Price (4 Pcs):</div>
+                <div style="font-size: 20px; font-weight: 800; color: #966f28;">₹${(p.price * 4).toLocaleString('en-IN')}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
 
     printWin.document.write(`
       <!DOCTYPE html>
       <html>
       <head>
-        <title>RIVAAZ - Wholesale Collection Catalog</title>
+        <title>RIVAAZ - Wholesale Collection Catalog (${RIVAAZ_PRODUCTS.length} Designs)</title>
+        <meta charset="UTF-8">
         <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
         <style>
-          body { font-family: 'Poppins', sans-serif; padding: 40px; color: #151f19; background: #fff; }
-          .header { text-align: center; border-bottom: 3px solid #0a1c14; padding-bottom: 20px; margin-bottom: 30px; }
-          .logo { font-size: 34px; font-weight: 900; letter-spacing: 2px; color: #0a1c14; }
-          .tagline { font-size: 15px; color: #c59d5f; letter-spacing: 2px; font-weight: 700; text-transform: uppercase; margin-top: 4px; }
-          .contact-bar { font-size: 14px; margin-top: 8px; color: #555; }
-          @media print { button { display: none; } }
+          * { box-sizing: border-box; }
+          body { font-family: 'Poppins', sans-serif; padding: 30px 40px; color: #151f19; background: #fdfbf7; margin: 0; }
+          .header { text-align: center; border-bottom: 3px solid #0a1c14; padding-bottom: 22px; margin-bottom: 30px; background: #ffffff; padding: 24px; border-radius: 10px; border: 1.5px solid #c59d5f; }
+          .logo { font-size: 36px; font-weight: 900; letter-spacing: 2px; color: #0a1c14; }
+          .tagline { font-size: 16px; color: #966f28; letter-spacing: 2px; font-weight: 700; text-transform: uppercase; margin-top: 4px; }
+          .contact-bar { font-size: 14px; margin-top: 10px; color: #444; font-weight: 500; line-height: 1.6; }
+          .catalog-container { max-width: 1000px; margin: 0 auto; }
+          @media print { 
+            body { padding: 15px; background: #fff; }
+            .no-print { display: none !important; }
+            .header { border: none; padding: 10px 0; margin-bottom: 20px; }
+          }
         </style>
       </head>
       <body>
-        <div class="header">
-          <div class="logo">RIVAAZ ROYAL ETHNIC WEAR</div>
-          <div class="tagline">India's Premium Wholesale Women's Ethnic Hub • Surat, Gujarat</div>
-          <p class="contact-bar">Surat Showroom: 123, Heritage Plaza, MG Road | WhatsApp: +91 75758 41119 | Email: support@rivaaz.in</p>
-          <button onclick="window.print()" style="margin-top: 14px; padding: 12px 28px; background: #0a1c14; color: #dfba73; border: none; font-size: 15px; font-weight: 700; cursor: pointer; border-radius: 6px;">Print / Save as PDF</button>
-        </div>
-        <div>
-          ${catalogItems}
+        <div class="catalog-container">
+          <div class="header">
+            <div class="logo">RIVAAZ ROYAL ETHNIC WEAR</div>
+            <div class="tagline">Surat's Premier B2B Manufacturer & Wholesale Supplier</div>
+            <p class="contact-bar">
+              📍 <strong>YAMUNA CHOWK, Gf, Kiran Mall, B/s Rangila Park, Mota Varachha, Surat, Gujarat 394101</strong><br>
+              💬 WhatsApp / Calling: <strong>+91 75758 41119</strong> &nbsp;|&nbsp; 
+              ✉️ Email: <strong>dipakvala333@gmail.com</strong>
+            </p>
+            <div class="no-print" style="margin-top: 16px; display: flex; gap: 12px; justify-content: center;">
+              <button onclick="window.print()" style="padding: 12px 30px; background: #0a1c14; color: #dfba73; border: 1.5px solid #c59d5f; font-size: 15px; font-weight: 700; cursor: pointer; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+                🖨️ Print / Save as PDF
+              </button>
+            </div>
+          </div>
+          <div>
+            ${catalogItems}
+          </div>
         </div>
       </body>
       </html>
     `);
     printWin.document.close();
-  }, 1000);
+  }, 800);
 }
 
 // Dedicated Mobile Navigation Drawer Controller
@@ -432,7 +496,7 @@ function initMobileNavigation() {
       </div>
 
       <div class="drawer-footer">
-        <p><i class="fa-solid fa-location-dot text-gold"></i> Heritage Plaza, Surat, Gujarat</p>
+        <p><i class="fa-solid fa-location-dot text-gold"></i> Kiran Mall, Mota Varachha, Surat</p>
         <button onclick="openWhatsAppChat(); closeMobileDrawer();" class="btn btn-whatsapp btn-block btn-sm" style="font-size: 0.85rem;">
           <i class="fa-brands fa-whatsapp"></i> Chat on WhatsApp
         </button>
@@ -636,8 +700,142 @@ function initHeroSlider() {
   }
 }
 
+// Dedicated Desktop Mega Dropdown Initializer
+function initDesktopHeaderDropdown() {
+  const dropdowns = document.querySelectorAll(".dropdown-menu.mega-dropdown");
+  if (dropdowns.length === 0 || typeof RIVAAZ_CATEGORIES === 'undefined') return;
+
+  const totalProducts = typeof RIVAAZ_PRODUCTS !== 'undefined' ? RIVAAZ_PRODUCTS.length : 146;
+  
+  const catItemsHtml = RIVAAZ_CATEGORIES.map(c => `
+    <a href="shop.html?category=${encodeURIComponent(c.id)}" class="dropdown-item">
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <img src="${c.image}" alt="${c.name}" class="dropdown-thumb" onerror="this.src='assets/images/placeholder.jpg'">
+        <div>
+          <div class="dropdown-title">${c.name}</div>
+          <div class="dropdown-sub">${c.hindiName}</div>
+        </div>
+      </div>
+      <span class="dropdown-badge">${c.count} Design${c.count === 1 ? '' : 's'}</span>
+    </a>
+  `).join('');
+
+  const brandItemsHtml = (typeof RIVAAZ_BRANDS !== 'undefined' ? RIVAAZ_BRANDS : []).map(b => `
+    <a href="shop.html?brand=${encodeURIComponent(b.code)}" class="product-subcat-badge">${b.name.replace(' Collection', '')} (${b.count})</a>
+  `).join('');
+
+  const fullContent = `
+    <div style="font-size: 0.78rem; font-weight: 800; color: var(--c-gold-600); text-transform: uppercase; letter-spacing: 1px; padding: 4px 14px 8px; border-bottom: 1px solid var(--c-border-subtle);">Main Categories</div>
+    ${catItemsHtml}
+    <div style="display: flex; gap: 6px; padding: 10px 14px 4px; flex-wrap: wrap; border-top: 1px solid var(--c-border-subtle); margin-top: 6px;">
+      <span style="font-size: 0.75rem; font-weight: 700; color: var(--c-text-muted); width: 100%;">Filter by Brand Collection:</span>
+      ${brandItemsHtml}
+    </div>
+    <a href="shop.html" class="dropdown-cta">
+      <span>View Complete Wholesale Catalog (${totalProducts} Designs)</span>
+      <i class="fa-solid fa-arrow-right"></i>
+    </a>
+  `;
+
+  dropdowns.forEach(dd => {
+    dd.innerHTML = fullContent;
+  });
+}
+
+// ==========================================================================
+// HERO BANNER SLIDER CONTROLLER
+// ==========================================================================
+let currentHeroSlide = 0;
+let heroSliderTimer = null;
+
+function initHeroSlider() {
+  const sliderEl = document.getElementById("heroBannerSlider");
+  if (!sliderEl) return;
+
+  const slides = sliderEl.querySelectorAll(".hero-slide");
+  const dots = sliderEl.querySelectorAll(".slider-dot");
+  if (slides.length <= 1) return;
+
+  function showSlide(index) {
+    if (index >= slides.length) currentHeroSlide = 0;
+    else if (index < 0) currentHeroSlide = slides.length - 1;
+    else currentHeroSlide = index;
+
+    slides.forEach((s, idx) => {
+      s.classList.toggle("active", idx === currentHeroSlide);
+    });
+
+    dots.forEach((d, idx) => {
+      d.classList.toggle("active", idx === currentHeroSlide);
+    });
+  }
+
+  window.nextHeroSlide = function() {
+    showSlide(currentHeroSlide + 1);
+    resetHeroTimer();
+  };
+
+  window.prevHeroSlide = function() {
+    showSlide(currentHeroSlide - 1);
+    resetHeroTimer();
+  };
+
+  window.goToHeroSlide = function(index) {
+    showSlide(index);
+    resetHeroTimer();
+  };
+
+  function startHeroTimer() {
+    stopHeroTimer();
+    heroSliderTimer = setInterval(() => {
+      showSlide(currentHeroSlide + 1);
+    }, 5000);
+  }
+
+  function stopHeroTimer() {
+    if (heroSliderTimer) clearInterval(heroSliderTimer);
+  }
+
+  function resetHeroTimer() {
+    stopHeroTimer();
+    startHeroTimer();
+  }
+
+  sliderEl.addEventListener("mouseenter", stopHeroTimer);
+  sliderEl.addEventListener("mouseleave", startHeroTimer);
+
+  // Touch Swipe Support for Mobile
+  let touchStartX = 0;
+  let touchEndX = 0;
+
+  sliderEl.addEventListener("touchstart", (e) => {
+    if (e.changedTouches && e.changedTouches.length) {
+      touchStartX = e.changedTouches[0].screenX;
+    }
+    stopHeroTimer();
+  }, { passive: true });
+
+  sliderEl.addEventListener("touchend", (e) => {
+    if (e.changedTouches && e.changedTouches.length) {
+      touchEndX = e.changedTouches[0].screenX;
+      const diff = touchStartX - touchEndX;
+      if (Math.abs(diff) > 40) {
+        if (diff > 0) {
+          showSlide(currentHeroSlide + 1);
+        } else {
+          showSlide(currentHeroSlide - 1);
+        }
+      }
+    }
+    startHeroTimer();
+  }, { passive: true });
+
+  startHeroTimer();
+}
+
 // DOM Initializer
 document.addEventListener("DOMContentLoaded", () => {
+  initDesktopHeaderDropdown();
   updateHeaderBadges();
   initMobileNavigation();
   initMobileBottomBar();
