@@ -204,159 +204,230 @@
     </div>
   </header>
 
-  <!-- Page Banner / Header -->
-  <section class="shop-hero-banner">
-    <div class="container shop-hero-content">
-      <div class="eyebrow" style="color: var(--c-gold-300); justify-content: center;">Direct Surat Factory Catalog</div>
-      <h1 style="font-size: 2.4rem; font-weight: 800; color: #fff; margin-bottom: 8px;">Wholesale Ethnic Collections</h1>
-      <p style="color: var(--c-gold-100); max-width: 650px; margin: 0 auto 20px; font-size: 0.95rem;">
-        Browse 146 ready-to-dispatch wholesale sets grouped by style categories (2-Piece, 3-Piece Round, Co-ords, Short Palazzo & Sharara, Straight Sets, Western).
-      </p>
-      <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
-        <button onclick="downloadCatalogue()" class="btn btn-gold btn-sm">
-          <i class="fa-solid fa-file-pdf"></i> Download PDF Catalog
-        </button>
-        <button onclick="openWhatsAppChat('Hello, please send the latest wholesale price sheet and new designs on WhatsApp.')" class="btn btn-whatsapp btn-sm">
-          <i class="fa-brands fa-whatsapp"></i> WhatsApp Catalog
-        </button>
+  <!-- 1. Collection Hero Banner Section -->
+  <section class="collection-hero-section">
+    <div class="container">
+      <div class="collection-hero-card">
+        <div class="collection-hero-text">
+          <div class="eyebrow-luxury">TRADITION MEETS TREND</div>
+          <h1 class="collection-hero-title">Ethnic Collections</h1>
+          <p class="collection-hero-desc">
+            Discover timeless elegance with our exclusive range of ethnic wear. Crafted for every celebration, every you.
+          </p>
+          <div class="collection-trust-pills">
+            <div class="trust-pill"><i class="fa-solid fa-seedling"></i> <span>Premium Fabrics</span></div>
+            <div class="trust-pill"><i class="fa-solid fa-wand-magic-sparkles"></i> <span>Trendy Designs</span></div>
+            <div class="trust-pill"><i class="fa-solid fa-tags"></i> <span>Wholesale Prices</span></div>
+            <div class="trust-pill"><i class="fa-solid fa-earth-americas"></i> <span>Worldwide Shipping</span></div>
+          </div>
+        </div>
+        <div class="collection-hero-img-wrap">
+          <img src="assets/images/collection-banner.jpg" alt="Rivaaz Ethnic Collections" class="collection-hero-img">
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- Shop Section -->
+  <!-- 2. Breadcrumbs Bar -->
+  <div class="collection-breadcrumbs-bar">
+    <div class="container">
+      <div class="breadcrumbs-list">
+        <a href="index.html">Home</a>
+        <span>/</span>
+        <a href="shop.html">Categories</a>
+        <span>/</span>
+        <span class="active-crumb" id="breadcrumbActiveCat">Ethnic Collections</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. Collection Layout (Sidebar Filter & Product Grid) -->
   <section class="shop-page-section">
     <div class="container">
-      <div class="shop-layout">
+      
+      <!-- Mobile Filter Button Trigger -->
+      <button class="mobile-filter-sticky-btn" onclick="openShopFilterDrawer()">
+        <i class="fa-solid fa-sliders"></i>
+        <span>Filter & Shop Categories</span>
+      </button>
+
+      <div class="collection-layout-wrapper">
         
-        <!-- Sidebar Filters -->
-        <aside class="filter-sidebar">
+        <!-- Left Sidebar: Filter & Shop -->
+        <aside class="collection-sidebar-card" id="collectionSidebar">
+          
+          <!-- Sidebar Header -->
+          <div class="sidebar-header">
+            <div class="sidebar-header-title">
+              <i class="fa-solid fa-sliders"></i>
+              <span>Filter & Shop</span>
+            </div>
+            <button class="mobile-sidebar-close" onclick="closeShopFilterDrawer()" aria-label="Close Filter">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+
           <!-- Search Widget -->
-          <div class="filter-widget">
-            <div class="filter-title"><span>Search Catalog</span> <i class="fa-solid fa-magnifying-glass text-gold"></i></div>
-            <input type="text" id="catalogSearchInput" class="form-control" placeholder="Search Code (e.g. SL-1055), Style..." style="font-size: 0.85rem; padding: 10px 12px;">
+          <div class="sidebar-widget">
+            <label class="sidebar-widget-label">Search</label>
+            <div class="search-input-wrap">
+              <input type="text" id="collectionSearchInput" placeholder="Search in this collection...">
+              <i class="fa-solid fa-magnifying-glass search-icon"></i>
+            </div>
           </div>
 
-          <!-- Main Garment Style Categories Filter -->
-          <div class="filter-widget">
-            <div class="filter-title"><span>Main Categories</span> <i class="fa-solid fa-vest-patches text-gold"></i></div>
-            <div class="filter-option-list" id="categoryFilterList">
+          <!-- Main Categories Accordion -->
+          <div class="sidebar-widget">
+            <div class="sidebar-accordion-header" onclick="toggleAccordion(this, 'mainCatList')">
+              <span class="sidebar-accordion-title">Main Categories</span>
+              <i class="fa-solid fa-chevron-down sidebar-accordion-icon"></i>
+            </div>
+            <div class="sidebar-items-list" id="mainCatList">
               <!-- Rendered via JS -->
             </div>
           </div>
 
-          <!-- Brand / Folder Collections Filter -->
-          <div class="filter-widget">
-            <div class="filter-title"><span>Brand Collections</span> <i class="fa-solid fa-layer-group text-gold"></i></div>
-            <div class="filter-option-list" id="brandFilterList">
+          <!-- Brand Collections Accordion -->
+          <div class="sidebar-widget">
+            <div class="sidebar-accordion-header" onclick="toggleAccordion(this, 'brandCatList')">
+              <span class="sidebar-accordion-title">Brand Collections</span>
+              <i class="fa-solid fa-chevron-down sidebar-accordion-icon"></i>
+            </div>
+            <div class="sidebar-items-list" id="brandCatList">
               <!-- Rendered via JS -->
             </div>
           </div>
 
-          <!-- Price Range Filter -->
-          <div class="filter-widget">
-            <div class="filter-title"><span>Wholesale Price</span> <i class="fa-solid fa-indian-rupee-sign text-gold"></i></div>
-            <div class="filter-option-list">
-              <label class="filter-checkbox-label">
-                <input type="radio" name="priceRange" value="ALL" checked onchange="applyFilters()">
+          <!-- Wholesale Price Filter -->
+          <div class="sidebar-widget">
+            <div class="sidebar-accordion-header" onclick="toggleAccordion(this, 'priceChoiceList')">
+              <span class="sidebar-accordion-title">Wholesale Price</span>
+              <i class="fa-solid fa-indian-rupee-sign" style="font-size: 0.8rem; color: var(--c-gold-500);"></i>
+            </div>
+            <div class="sidebar-choice-list" id="priceChoiceList">
+              <label class="sidebar-choice-label">
+                <input type="radio" name="priceFilterRadio" value="ALL" checked onchange="handleFilterChange()">
                 <span>All Prices</span>
               </label>
-              <label class="filter-checkbox-label">
-                <input type="radio" name="priceRange" value="UNDER_1000" onchange="applyFilters()">
+              <label class="sidebar-choice-label">
+                <input type="radio" name="priceFilterRadio" value="UNDER_1000" onchange="handleFilterChange()">
                 <span>Under ₹1,000 / Pc</span>
               </label>
-              <label class="filter-checkbox-label">
-                <input type="radio" name="priceRange" value="1000_1500" onchange="applyFilters()">
-                <span>₹1,000 - ₹1,500 / Pc</span>
+              <label class="sidebar-choice-label">
+                <input type="radio" name="priceFilterRadio" value="1000_1500" onchange="handleFilterChange()">
+                <span>₹1,000 – ₹1,500 / Pc</span>
               </label>
-              <label class="filter-checkbox-label">
-                <input type="radio" name="priceRange" value="1500_2000" onchange="applyFilters()">
-                <span>₹1,500 - ₹2,000 / Pc</span>
+              <label class="sidebar-choice-label">
+                <input type="radio" name="priceFilterRadio" value="1500_2000" onchange="handleFilterChange()">
+                <span>₹1,500 – ₹2,000 / Pc</span>
               </label>
-              <label class="filter-checkbox-label">
-                <input type="radio" name="priceRange" value="ABOVE_2000" onchange="applyFilters()">
+              <label class="sidebar-choice-label">
+                <input type="radio" name="priceFilterRadio" value="ABOVE_2000" onchange="handleFilterChange()">
                 <span>Above ₹2,000 / Pc</span>
               </label>
             </div>
           </div>
 
-          <!-- Fabric Filter -->
-          <div class="filter-widget">
-            <div class="filter-title"><span>Fabric Types</span> <i class="fa-solid fa-scroll text-gold"></i></div>
-            <div class="filter-option-list">
-              <label class="filter-checkbox-label">
-                <input type="checkbox" class="fabric-filter" value="Cotton" onchange="applyFilters()">
+          <!-- Fabric Types Filter -->
+          <div class="sidebar-widget">
+            <div class="sidebar-accordion-header" onclick="toggleAccordion(this, 'fabricChoiceList')">
+              <span class="sidebar-accordion-title">Fabric Types</span>
+              <i class="fa-solid fa-feather" style="font-size: 0.8rem; color: var(--c-gold-500);"></i>
+            </div>
+            <div class="sidebar-choice-list" id="fabricChoiceList">
+              <label class="sidebar-choice-label">
+                <input type="checkbox" class="fabric-cb" value="cotton" onchange="handleFilterChange()">
                 <span>Pure Cotton (60/60) / Mal</span>
               </label>
-              <label class="filter-checkbox-label">
-                <input type="checkbox" class="fabric-filter" value="Roman" onchange="applyFilters()">
+              <label class="sidebar-choice-label">
+                <input type="checkbox" class="fabric-cb" value="roman" onchange="handleFilterChange()">
                 <span>Premium Roman Silk</span>
               </label>
-              <label class="filter-checkbox-label">
-                <input type="checkbox" class="fabric-filter" value="Chanderi" onchange="applyFilters()">
+              <label class="sidebar-choice-label">
+                <input type="checkbox" class="fabric-cb" value="chanderi" onchange="handleFilterChange()">
                 <span>Mal Chanderi Silk</span>
               </label>
-              <label class="filter-checkbox-label">
-                <input type="checkbox" class="fabric-filter" value="Crepe" onchange="applyFilters()">
+              <label class="sidebar-choice-label">
+                <input type="checkbox" class="fabric-cb" value="crepe" onchange="handleFilterChange()">
                 <span>Heavy Royal Crepe Silk</span>
               </label>
-              <label class="filter-checkbox-label">
-                <input type="checkbox" class="fabric-filter" value="Jacquard" onchange="applyFilters()">
+              <label class="sidebar-choice-label">
+                <input type="checkbox" class="fabric-cb" value="jacquard" onchange="handleFilterChange()">
                 <span>Tissue Jacquard Silk</span>
               </label>
-              <label class="filter-checkbox-label">
-                <input type="checkbox" class="fabric-filter" value="Gajji" onchange="applyFilters()">
+              <label class="sidebar-choice-label">
+                <input type="checkbox" class="fabric-cb" value="rayon" onchange="handleFilterChange()">
                 <span>Gajji Silk / Rayon Slub</span>
               </label>
             </div>
           </div>
 
-          <button class="btn btn-outline-gold btn-block btn-sm" onclick="resetFilters()">
+          <!-- Reset All Filters Button -->
+          <button class="btn-reset-filters" onclick="resetAllCollectionFilters()">
             <i class="fa-solid fa-rotate-left"></i> Reset All Filters
           </button>
+
         </aside>
 
-        <!-- Main Product Listing -->
-        <main>
-          <!-- Mobile Filter Trigger -->
-          <div class="mobile-filter-bar">
-            <button class="btn-mobile-filter" onclick="openShopMobileFilter()">
-              <i class="fa-solid fa-sliders text-gold"></i>
-              <span>Filter Categories & Brands</span>
-            </button>
+        <!-- Right Main Content: Header, Quick Chips, Sort, Grid & Pagination -->
+        <main class="collection-main-content">
+          
+          <!-- Top Content Header -->
+          <div class="collection-top-header">
+            <div class="collection-heading-group">
+              <h2 id="collectionMainHeading">All Ethnic Collections</h2>
+              <p id="collectionMainSubheading">Explore our latest and most loved ethnic wear collections.</p>
+            </div>
+            <div class="collection-toolbar-right">
+              <span class="product-count-badge-text">Showing <strong id="currentShownCount">0</strong> Products</span>
+              <div class="view-toggle-group">
+                <button class="view-btn active" id="btnGridView" onclick="setViewMode('grid')" title="Grid View">
+                  <i class="fa-solid fa-table-cells-large"></i>
+                </button>
+                <button class="view-btn" id="btnListView" onclick="setViewMode('list')" title="List View">
+                  <i class="fa-solid fa-list-ul"></i>
+                </button>
+              </div>
+            </div>
           </div>
 
-          <!-- Main Categories Quick Chips -->
-          <div class="subcat-filter-chips" id="categoryQuickChips">
+          <!-- Category Quick Pills Bar -->
+          <div class="quick-pills-bar" id="categoryQuickPills">
             <!-- Rendered via JS -->
           </div>
 
-          <div class="shop-top-toolbar">
-            <div class="shop-results-count">
-              Showing <strong id="productCountNum">0</strong> Wholesale Designs
-            </div>
-            <div class="shop-sort-controls">
-              <label for="sortSelector" style="font-size: 0.85rem; font-weight: 600;">Sort By:</label>
-              <select id="sortSelector" class="sort-select" onchange="applyFilters()">
-                <option value="default">Featured / Best Matches</option>
-                <option value="price-low">Price: Low to High</option>
-                <option value="price-high">Price: High to Low</option>
-                <option value="name">Name (A - Z)</option>
-              </select>
-            </div>
+          <!-- Sort Bar -->
+          <div class="collection-sort-bar">
+            <span class="sort-label-text">Sort by:</span>
+            <select id="collectionSortSelect" class="sort-custom-select" onchange="handleFilterChange()">
+              <option value="featured">Featured / Best Matches</option>
+              <option value="price-low">Price: Low to High</option>
+              <option value="price-high">Price: High to Low</option>
+              <option value="newest">Newest Arrivals</option>
+              <option value="name">Name (A – Z)</option>
+            </select>
           </div>
 
-          <!-- Product Grid -->
-          <div id="shopCatalogGrid" class="products-grid" style="grid-template-columns: repeat(3, 1fr);">
+          <!-- Products Grid -->
+          <div id="collectionProductGrid" class="collection-products-grid">
             <!-- Rendered dynamically -->
           </div>
 
           <!-- Empty State -->
-          <div id="noProductsFound" style="display: none; text-align: center; padding: 60px 20px; background: #fff; border-radius: 8px; border: 1px solid var(--c-border-light);">
-            <div style="font-size: 3rem; color: var(--c-gold-400); margin-bottom: 12px;"><i class="fa-solid fa-shirt"></i></div>
-            <h3 style="font-size: 1.4rem; color: var(--c-emerald-950);">No Matching Wholesale Designs Found</h3>
-            <p style="color: var(--c-text-muted); font-size: 0.9rem; margin-bottom: 20px;">Try clearing some filters or searching with different Item Code or keywords.</p>
-            <button class="btn btn-gold btn-sm" onclick="resetFilters()">Clear Filters</button>
+          <div id="collectionEmptyState" style="display: none; text-align: center; padding: 60px 20px; background: #fff; border-radius: 16px; border: 1px solid var(--c-border-subtle); margin: 20px 0;">
+            <div style="font-size: 3.5rem; color: var(--c-gold-400); margin-bottom: 14px;"><i class="fa-solid fa-bag-shopping"></i></div>
+            <h3 style="font-size: 1.5rem; color: var(--c-emerald-950); font-weight: 800; margin-bottom: 8px;">No Matching Designs Found</h3>
+            <p style="color: var(--c-text-muted); font-size: 0.95rem; max-width: 480px; margin: 0 auto 22px;">We couldn't find any products matching your active filters. Try adjusting search keywords or resetting price & category filters.</p>
+            <button class="btn btn-gold btn-sm" onclick="resetAllCollectionFilters()">
+              <i class="fa-solid fa-rotate-left"></i> Reset All Filters
+            </button>
           </div>
+
+          <!-- Numbered Pagination Row -->
+          <div class="collection-pagination-row" id="collectionPagination">
+            <!-- Rendered via JS -->
+          </div>
+
         </main>
 
       </div>
@@ -465,231 +536,466 @@
   <script src="assets/js/products.js"></script>
   <script src="assets/js/main.js"></script>
   <script>
-    let activeCategory = "ALL";
-    let activeBrand = "ALL";
+    // State management for Collection Page
+    let currentCategory = "ALL";
+    let currentBrand = "ALL";
+    let currentPage = 1;
+    const itemsPerPage = 9;
+    let viewMode = "grid";
 
-    function initShopPage() {
+    // Palette generator for color swatch dots
+    const swatchPalettes = [
+      ["#dfba73", "#9333ea", "#059669"],
+      ["#e11d48", "#f59e0b", "#0284c7"],
+      ["#d97706", "#4f46e5", "#10b981"],
+      ["#be123c", "#3b82f6", "#eab308"],
+      ["#047857", "#c026d3", "#f97316"],
+      ["#854d0e", "#1d4ed8", "#ec4899"]
+    ];
+
+    function initCollectionPage() {
       const urlParams = new URLSearchParams(window.location.search);
       const catParam = urlParams.get('category') || urlParams.get('subcategory');
       const brandParam = urlParams.get('brand');
-      const filterParam = urlParams.get('filter');
       const searchParam = urlParams.get('search') || urlParams.get('code');
 
-      if (catParam) {
-        activeCategory = decodeURIComponent(catParam).trim();
-      }
-      if (brandParam) {
-        activeBrand = decodeURIComponent(brandParam).trim().toUpperCase();
-      }
+      if (catParam) currentCategory = decodeURIComponent(catParam).trim();
+      if (brandParam) currentBrand = decodeURIComponent(brandParam).trim().toUpperCase();
+
       if (searchParam) {
-        const sInput = document.getElementById("catalogSearchInput");
+        const sInput = document.getElementById("collectionSearchInput");
         if (sInput) sInput.value = searchParam;
       }
 
-      // 1. Render Main Categories Sidebar List
-      const catFilterContainer = document.getElementById("categoryFilterList");
-      if (catFilterContainer) {
-        const totalCount = RIVAAZ_PRODUCTS.length;
-        let html = `
-          <div class="filter-option-item ${isCategoryActive('ALL') ? 'active' : ''}" onclick="selectCategory('ALL')">
-            <span>All Categories</span>
-            <span class="filter-count">${totalCount}</span>
-          </div>
-        `;
-        html += RIVAAZ_CATEGORIES.map(c => `
-          <div class="filter-option-item ${isCategoryActive(c.id) || isCategoryActive(c.name) ? 'active' : ''}" onclick="selectCategory('${c.id}')">
-            <span>${c.name}</span>
-            <span class="filter-count">${c.count}</span>
-          </div>
-        `).join('');
-        catFilterContainer.innerHTML = html;
+      renderSidebarCategories();
+      renderSidebarBrands();
+      renderQuickPills();
+
+      const searchInput = document.getElementById("collectionSearchInput");
+      if (searchInput) {
+        searchInput.addEventListener("input", () => {
+          currentPage = 1;
+          renderProducts();
+        });
       }
 
-      // 2. Render Brand Collections Sidebar List
-      const brandFilterContainer = document.getElementById("brandFilterList");
-      if (brandFilterContainer) {
-        const totalCount = RIVAAZ_PRODUCTS.length;
-        let bHtml = `
-          <div class="filter-option-item ${activeBrand === 'ALL' ? 'active' : ''}" onclick="selectBrand('ALL')">
-            <span>All Brands</span>
-            <span class="filter-count">${totalCount}</span>
+      renderProducts();
+    }
+
+    function renderSidebarCategories() {
+      const container = document.getElementById("mainCatList");
+      if (!container) return;
+
+      const totalCount = RIVAAZ_PRODUCTS.length;
+      let html = `
+        <div class="sidebar-item-row ${currentCategory === 'ALL' ? 'active' : ''}" onclick="filterByCategory('ALL')">
+          <span>All Categories</span>
+          <span class="sidebar-item-count">${totalCount}</span>
+        </div>
+      `;
+
+      html += RIVAAZ_CATEGORIES.map(cat => {
+        const isActive = isCategoryMatch(cat.id, currentCategory);
+        return `
+          <div class="sidebar-item-row ${isActive ? 'active' : ''}" onclick="filterByCategory('${cat.id}')">
+            <span>${cat.name}</span>
+            <span class="sidebar-item-count">${cat.count}</span>
           </div>
         `;
-        bHtml += RIVAAZ_BRANDS.map(b => `
-          <div class="filter-option-item ${activeBrand === b.code ? 'active' : ''}" onclick="selectBrand('${b.code}')">
-            <span>${b.name}</span>
-            <span class="filter-count">${b.count}</span>
-          </div>
-        `).join('');
-        brandFilterContainer.innerHTML = bHtml;
-      }
+      }).join('');
 
-      // 3. Render Category Quick Chips at Top
-      const quickChipsContainer = document.getElementById("categoryQuickChips");
-      if (quickChipsContainer) {
-        let chipsHtml = `
-          <button class="subcat-filter-chip ${isCategoryActive('ALL') ? 'active' : ''}" onclick="selectCategory('ALL')">
-            <span>All Styles</span>
+      container.innerHTML = html;
+    }
+
+    function renderSidebarBrands() {
+      const container = document.getElementById("brandCatList");
+      if (!container) return;
+
+      const totalCount = RIVAAZ_PRODUCTS.length;
+      let html = `
+        <div class="sidebar-item-row ${currentBrand === 'ALL' ? 'active' : ''}" onclick="filterByBrand('ALL')">
+          <span>All Brands</span>
+          <span class="sidebar-item-count">${totalCount}</span>
+        </div>
+      `;
+
+      html += RIVAAZ_BRANDS.map(brand => {
+        const isActive = currentBrand === brand.code;
+        return `
+          <div class="sidebar-item-row ${isActive ? 'active' : ''}" onclick="filterByBrand('${brand.code}')">
+            <span>${brand.name}</span>
+            <span class="sidebar-item-count">${brand.count}</span>
+          </div>
+        `;
+      }).join('');
+
+      container.innerHTML = html;
+    }
+
+    function renderQuickPills() {
+      const container = document.getElementById("categoryQuickPills");
+      if (!container) return;
+
+      let html = `
+        <button class="quick-pill-btn ${currentCategory === 'ALL' ? 'active' : ''}" onclick="filterByCategory('ALL')">
+          All
+        </button>
+      `;
+
+      html += RIVAAZ_CATEGORIES.map(cat => {
+        const isActive = isCategoryMatch(cat.id, currentCategory);
+        return `
+          <button class="quick-pill-btn ${isActive ? 'active' : ''}" onclick="filterByCategory('${cat.id}')">
+            ${cat.name}
           </button>
         `;
-        chipsHtml += RIVAAZ_CATEGORIES.map(c => `
-          <button class="subcat-filter-chip ${isCategoryActive(c.id) || isCategoryActive(c.name) ? 'active' : ''}" onclick="selectCategory('${c.id}')">
-            <span>${c.name}</span>
-            <span class="chip-count">${c.count}</span>
-          </button>
-        `).join('');
-        quickChipsContainer.innerHTML = chipsHtml;
+      }).join('');
+
+      container.innerHTML = html;
+
+      // Auto-scroll active pill into view in slider strip
+      setTimeout(() => {
+        const activeBtn = container.querySelector(".quick-pill-btn.active");
+        if (activeBtn) {
+          activeBtn.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+        }
+      }, 40);
+    }
+
+    function isCategoryMatch(catId, target) {
+      if (target === "ALL" && catId === "ALL") return true;
+      if (target === "ALL" || catId === "ALL") return false;
+      const cleanA = catId.toLowerCase().replace(/[-\s]/g, '');
+      const cleanB = target.toLowerCase().replace(/[-\s]/g, '');
+      return cleanA === cleanB;
+    }
+
+    function filterByCategory(catId) {
+      currentCategory = catId;
+      currentPage = 1;
+
+      // Update dynamic headings & breadcrumb
+      const headingEl = document.getElementById("collectionMainHeading");
+      const breadcrumbEl = document.getElementById("breadcrumbActiveCat");
+      const mobileTitleEl = document.getElementById("mobilePageTitle");
+      if (catId === "ALL") {
+        if (headingEl) headingEl.textContent = "All Ethnic Collections";
+        if (breadcrumbEl) breadcrumbEl.textContent = "Ethnic Collections";
+        if (mobileTitleEl) mobileTitleEl.textContent = "Ethnic Collections";
+      } else {
+        const catObj = RIVAAZ_CATEGORIES.find(c => isCategoryMatch(c.id, catId));
+        const catTitle = catObj ? catObj.name : catId;
+        if (headingEl) headingEl.textContent = `${catTitle} Collection`;
+        if (breadcrumbEl) breadcrumbEl.textContent = catTitle;
+        if (mobileTitleEl) mobileTitleEl.textContent = catTitle;
       }
 
-      // Search input listener
-      const sInput = document.getElementById("catalogSearchInput");
-      if (sInput) {
-        sInput.addEventListener("input", applyFilters);
+      renderSidebarCategories();
+      renderQuickPills();
+      renderProducts();
+
+      if (window.innerWidth <= 900) {
+        closeShopFilterDrawer();
       }
-
-      applyFilters();
     }
 
-    function isCategoryActive(catIdOrName) {
-      if (activeCategory === "ALL" && catIdOrName === "ALL") return true;
-      if (activeCategory === "ALL" || catIdOrName === "ALL") return false;
-      const a = activeCategory.toLowerCase().replace(/[-\s]/g, '');
-      const b = catIdOrName.toLowerCase().replace(/[-\s]/g, '');
-      return a === b;
+    function filterByBrand(brandCode) {
+      currentBrand = brandCode;
+      currentPage = 1;
+      renderSidebarBrands();
+      renderProducts();
+
+      if (window.innerWidth <= 900) {
+        closeShopFilterDrawer();
+      }
     }
 
-    function selectCategory(catId) {
-      activeCategory = catId;
-      
-      const items = document.querySelectorAll("#categoryFilterList .filter-option-item");
-      items.forEach(el => el.classList.remove("active"));
-      items.forEach(el => {
-        if (catId === "ALL" && el.textContent.includes("All Categories")) el.classList.add("active");
-        else if (catId !== "ALL") {
-          const found = RIVAAZ_CATEGORIES.find(c => c.id === catId || c.name === catId);
-          if (found && el.textContent.includes(found.name)) el.classList.add("active");
-        }
-      });
-
-      const chips = document.querySelectorAll("#categoryQuickChips .subcat-filter-chip");
-      chips.forEach(el => el.classList.remove("active"));
-      chips.forEach(el => {
-        if (catId === "ALL" && el.textContent.includes("All Styles")) el.classList.add("active");
-        else if (catId !== "ALL") {
-          const found = RIVAAZ_CATEGORIES.find(c => c.id === catId || c.name === catId);
-          if (found && el.textContent.includes(found.name)) el.classList.add("active");
-        }
-      });
-
-      applyFilters();
+    function handleFilterChange() {
+      currentPage = 1;
+      renderProducts();
     }
 
-    function selectBrand(brandCode) {
-      activeBrand = brandCode;
-      const items = document.querySelectorAll("#brandFilterList .filter-option-item");
-      items.forEach(el => el.classList.remove("active"));
-      items.forEach(el => {
-        if (brandCode === "ALL" && el.textContent.includes("All Brands")) el.classList.add("active");
-        else if (brandCode !== "ALL") {
-          const b = RIVAAZ_BRANDS.find(x => x.code === brandCode);
-          if (b && el.textContent.includes(b.name)) el.classList.add("active");
-        }
-      });
-      applyFilters();
-    }
+    function getFilteredProducts() {
+      const searchVal = (document.getElementById("collectionSearchInput")?.value || "").toLowerCase().trim();
+      const sortVal = document.getElementById("collectionSortSelect")?.value || "featured";
+      const priceRange = document.querySelector("input[name='priceFilterRadio']:checked")?.value || "ALL";
+      const selectedFabrics = Array.from(document.querySelectorAll(".fabric-cb:checked")).map(cb => cb.value.toLowerCase());
 
-    function applyFilters() {
-      const searchVal = (document.getElementById("catalogSearchInput")?.value || "").toLowerCase().trim();
-      const sortVal = document.getElementById("sortSelector")?.value || "default";
-      const priceRange = document.querySelector("input[name='priceRange']:checked")?.value || "ALL";
-      const selectedFabrics = Array.from(document.querySelectorAll(".fabric-filter:checked")).map(cb => cb.value.toLowerCase());
-
-      let filtered = RIVAAZ_PRODUCTS.filter(p => {
-        if (activeCategory !== "ALL") {
-          const target = activeCategory.toLowerCase().replace(/[-\s]/g, '');
-          const pCat = (p.category || "").toLowerCase().replace(/[-\s]/g, '');
-          const pCatSlug = (p.categorySlug || "").toLowerCase().replace(/[-\s]/g, '');
-          if (target !== pCat && target !== pCatSlug) return false;
+      let results = RIVAAZ_PRODUCTS.filter(p => {
+        // Category Filter
+        if (currentCategory !== "ALL") {
+          const match = isCategoryMatch(p.category, currentCategory) || isCategoryMatch(p.categorySlug || '', currentCategory);
+          if (!match) return false;
         }
 
-        if (activeBrand !== "ALL" && p.brand !== activeBrand) {
+        // Brand Filter
+        if (currentBrand !== "ALL" && p.brand !== currentBrand) {
           return false;
         }
 
+        // Search Filter
         if (searchVal) {
-          const codeMatch = (p.code || "").toLowerCase().includes(searchVal);
-          const titleMatch = (p.title || p.name || "").toLowerCase().includes(searchVal);
-          const catMatch = (p.category || "").toLowerCase().includes(searchVal);
-          const brandMatch = (p.brandName || p.brand || "").toLowerCase().includes(searchVal);
-          const fabricMatch = (p.fabric || "").toLowerCase().includes(searchVal);
-          const workMatch = (p.work || "").toLowerCase().includes(searchVal);
-          if (!codeMatch && !titleMatch && !catMatch && !brandMatch && !fabricMatch && !workMatch) return false;
+          const code = (p.code || "").toLowerCase();
+          const title = (p.title || p.name || "").toLowerCase();
+          const cat = (p.category || "").toLowerCase();
+          const brand = (p.brandName || p.brand || "").toLowerCase();
+          const fabric = (p.fabric || "").toLowerCase();
+          if (!code.includes(searchVal) && !title.includes(searchVal) && !cat.includes(searchVal) && !brand.includes(searchVal) && !fabric.includes(searchVal)) {
+            return false;
+          }
         }
 
+        // Price Filter
         if (priceRange === "UNDER_1000" && p.price >= 1000) return false;
         if (priceRange === "1000_1500" && (p.price < 1000 || p.price > 1500)) return false;
         if (priceRange === "1500_2000" && (p.price < 1500 || p.price > 2000)) return false;
         if (priceRange === "ABOVE_2000" && p.price <= 2000) return false;
 
+        // Fabric Filter
         if (selectedFabrics.length > 0) {
-          const hasFabric = selectedFabrics.some(f => (p.fabric || "").toLowerCase().includes(f));
-          if (!hasFabric) return false;
+          const pFabric = (p.fabric || "").toLowerCase();
+          const matchesAnyFabric = selectedFabrics.some(f => pFabric.includes(f));
+          if (!matchesAnyFabric) return false;
         }
 
         return true;
       });
 
+      // Sorting
       if (sortVal === "price-low") {
-        filtered.sort((a, b) => a.price - b.price);
+        results.sort((a, b) => a.price - b.price);
       } else if (sortVal === "price-high") {
-        filtered.sort((a, b) => b.price - a.price);
+        results.sort((a, b) => b.price - a.price);
       } else if (sortVal === "name") {
-        filtered.sort((a, b) => (a.title || a.name).localeCompare(b.title || b.name));
+        results.sort((a, b) => (a.title || a.name).localeCompare(b.title || b.name));
+      } else if (sortVal === "newest") {
+        results.sort((a, b) => (b.id || "").localeCompare(a.id || ""));
       }
 
-      const grid = document.getElementById("shopCatalogGrid");
-      const emptyBox = document.getElementById("noProductsFound");
-      const countEl = document.getElementById("productCountNum");
+      return results;
+    }
 
+    function renderProducts() {
+      const filtered = getFilteredProducts();
+      const countEl = document.getElementById("currentShownCount");
       if (countEl) countEl.textContent = filtered.length;
 
+      const grid = document.getElementById("collectionProductGrid");
+      const emptyState = document.getElementById("collectionEmptyState");
+      const paginationEl = document.getElementById("collectionPagination");
+
+      if (filtered.length === 0) {
+        if (grid) grid.innerHTML = "";
+        if (emptyState) emptyState.style.display = "block";
+        if (paginationEl) paginationEl.innerHTML = "";
+        return;
+      }
+
+      if (emptyState) emptyState.style.display = "none";
+
+      // Pagination slice
+      const totalPages = Math.ceil(filtered.length / itemsPerPage);
+      if (currentPage > totalPages) currentPage = 1;
+      const startIndex = (currentPage - 1) * itemsPerPage;
+      const paginatedItems = filtered.slice(startIndex, startIndex + itemsPerPage);
+
       if (grid) {
-        if (filtered.length === 0) {
-          grid.innerHTML = "";
-          if (emptyBox) emptyBox.style.display = "block";
-        } else {
-          if (emptyBox) emptyBox.style.display = "none";
-          grid.innerHTML = filtered.map(p => createProductCardHTML(p)).join('');
-        }
+        grid.className = `collection-products-grid ${viewMode === 'list' ? 'list-view' : ''}`;
+        grid.innerHTML = paginatedItems.map((p, idx) => createProductCardMarkup(p, startIndex + idx)).join('');
+      }
+
+      renderPagination(totalPages);
+    }
+
+    function createProductCardMarkup(product, index) {
+      const wishlist = getWishlist();
+      const isWishlisted = wishlist.includes(product.id);
+      
+      // Dynamic corner badge styles
+      let badgeType = "badge-best-seller";
+      let badgeText = "Best Seller";
+      if (index % 4 === 1) {
+        badgeType = "badge-new-arrival";
+        badgeText = "New Arrival";
+      } else if (index % 4 === 2) {
+        badgeType = "badge-trending";
+        badgeText = "Trending";
+      } else if (index % 4 === 3) {
+        badgeType = "badge-hot-deal";
+        badgeText = "Hot Deal";
+      }
+
+      const imgSrc = (product.images && product.images[0]) || product.mainImage || 'assets/images/placeholder.jpg';
+      const mrp = product.mrp || Math.round(product.price * 1.35);
+
+      // Color dots
+      const palette = swatchPalettes[index % swatchPalettes.length];
+      const colorDotsHtml = palette.map(color => `<span class="color-dot" style="background: ${color};"></span>`).join('');
+
+      return `
+        <div class="collection-product-card" data-id="${product.id}">
+          <div class="card-img-box">
+            <span class="card-corner-badge ${badgeType}">${badgeText}</span>
+            <button class="card-wishlist-btn ${isWishlisted ? 'active' : ''}" onclick="toggleWishlist('${product.id}', this)" title="Add to Wishlist">
+              <i class="fa-solid fa-heart"></i>
+            </button>
+            <img src="${imgSrc}" alt="${product.title || product.name}" loading="lazy" onclick="window.location.href='product-detail.html?id=${product.id}'" style="cursor: pointer;">
+          </div>
+          
+          <div class="card-swatches-row">
+            ${colorDotsHtml}
+          </div>
+
+          <div class="card-body-content">
+            <div>
+              <h4 class="card-product-title">
+                <a href="product-detail.html?id=${product.id}">${product.title || product.name}</a>
+              </h4>
+              <div class="card-product-subtitle">${product.fabric} | ${product.category}</div>
+              
+              <div class="card-price-row">
+                <div class="card-price-current">₹${product.price.toLocaleString('en-IN')} <span>/ Pc</span></div>
+                <div class="card-price-mrp">₹${mrp.toLocaleString('en-IN')}</div>
+              </div>
+
+              <div class="card-size-badge">
+                <i class="fa-solid fa-box-open"></i> Size (4 Pcs: M-L-XL-XXL)
+              </div>
+            </div>
+
+            <button class="btn-card-action btn-card-wa" onclick="orderProductOnWhatsApp('${product.id}')">
+              <i class="fa-brands fa-whatsapp"></i> Shop on WhatsApp
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    function orderProductOnWhatsApp(productId) {
+      const product = RIVAAZ_PRODUCTS.find(p => p.id === productId);
+      if (!product) return;
+      const msg = `Hello Rivaaz Collection, I want to order this wholesale set:\n\n*${product.title || product.name}*\n• Code: ${product.code || product.id}\n• Category: ${product.category}\n• Fabric: ${product.fabric}\n• Wholesale Rate: ₹${product.price}/Pc\n• Pack Size: 4 Pcs (M-L-XL-XXL)\n• Total Set Price: ₹${(product.price * 4).toLocaleString('en-IN')}\n\nPlease share delivery details and dispatch confirmation.`;
+      const url = `https://wa.me/917575841119?text=${encodeURIComponent(msg)}`;
+      window.open(url, '_blank');
+    }
+
+    function renderPagination(totalPages) {
+      const container = document.getElementById("collectionPagination");
+      if (!container || totalPages <= 1) {
+        if (container) container.innerHTML = "";
+        return;
+      }
+
+      let html = `
+        <button class="page-nav-arrow" onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled style="opacity: 0.4; cursor: not-allowed;"' : ''}>
+          <i class="fa-solid fa-chevron-left"></i>
+        </button>
+      `;
+
+      for (let i = 1; i <= totalPages; i++) {
+        html += `
+          <button class="page-num-btn ${currentPage === i ? 'active' : ''}" onclick="changePage(${i})">
+            ${i}
+          </button>
+        `;
+      }
+
+      html += `
+        <button class="page-nav-arrow" onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled style="opacity: 0.4; cursor: not-allowed;"' : ''}>
+          <i class="fa-solid fa-chevron-right"></i>
+        </button>
+      `;
+
+      container.innerHTML = html;
+    }
+
+    function changePage(newPage) {
+      const filtered = getFilteredProducts();
+      const totalPages = Math.ceil(filtered.length / itemsPerPage);
+      if (newPage < 1 || newPage > totalPages) return;
+      currentPage = newPage;
+      renderProducts();
+      
+      const grid = document.getElementById("collectionProductGrid");
+      if (grid) {
+        grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
     }
 
-    function resetFilters() {
-      activeCategory = "ALL";
-      activeBrand = "ALL";
-      const sInput = document.getElementById("catalogSearchInput");
+    function setViewMode(mode) {
+      viewMode = mode;
+      const btnGrid = document.getElementById("btnGridView");
+      const btnList = document.getElementById("btnListView");
+
+      if (mode === "grid") {
+        btnGrid.classList.add("active");
+        btnList.classList.remove("active");
+      } else {
+        btnList.classList.add("active");
+        btnGrid.classList.remove("active");
+      }
+
+      const grid = document.getElementById("collectionProductGrid");
+      if (grid) {
+        grid.className = `collection-products-grid ${mode === 'list' ? 'list-view' : ''}`;
+      }
+    }
+
+    function quickAddToCart(productId) {
+      addToCart(productId, 1);
+    }
+
+    function resetAllCollectionFilters() {
+      currentCategory = "ALL";
+      currentBrand = "ALL";
+      currentPage = 1;
+
+      const sInput = document.getElementById("collectionSearchInput");
       if (sInput) sInput.value = "";
-      
-      const priceAll = document.querySelector("input[name='priceRange'][value='ALL']");
-      if (priceAll) priceAll.checked = true;
-      
-      const fabricBoxes = document.querySelectorAll(".fabric-filter");
-      fabricBoxes.forEach(cb => cb.checked = false);
-      
-      const sortSel = document.getElementById("sortSelector");
-      if (sortSel) sortSel.value = "default";
 
-      initShopPage();
+      const radioAll = document.querySelector("input[name='priceFilterRadio'][value='ALL']");
+      if (radioAll) radioAll.checked = true;
+
+      const fabricBoxes = document.querySelectorAll(".fabric-cb");
+      fabricBoxes.forEach(cb => cb.checked = false);
+
+      const sortSelect = document.getElementById("collectionSortSelect");
+      if (sortSelect) sortSelect.value = "featured";
+
+      filterByCategory("ALL");
     }
 
-    function openShopMobileFilter() {
-      const aside = document.querySelector(".filter-sidebar");
-      if (aside) {
-        aside.classList.toggle("mobile-active");
+    function toggleAccordion(headerElem, contentId) {
+      headerElem.classList.toggle("collapsed");
+      const content = document.getElementById(contentId);
+      if (content) {
+        content.style.display = headerElem.classList.contains("collapsed") ? "none" : "flex";
       }
     }
 
-    document.addEventListener("DOMContentLoaded", initShopPage);
+    function openShopFilterDrawer() {
+      const sidebar = document.getElementById("collectionSidebar");
+      const backdrop = document.querySelector(".mobile-nav-backdrop");
+      if (sidebar) sidebar.classList.add("mobile-open");
+      if (backdrop) {
+        backdrop.classList.add("active");
+        backdrop.onclick = closeShopFilterDrawer;
+      }
+      document.body.style.overflow = "hidden";
+    }
+
+    function closeShopFilterDrawer() {
+      const sidebar = document.getElementById("collectionSidebar");
+      const backdrop = document.querySelector(".mobile-nav-backdrop");
+      if (sidebar) sidebar.classList.remove("mobile-open");
+      if (backdrop) {
+        backdrop.classList.remove("active");
+        backdrop.onclick = closeMobileDrawer;
+      }
+      document.body.style.overflow = "";
+    }
+
+    document.addEventListener("DOMContentLoaded", initCollectionPage);
   </script>
 </body>
 </html>

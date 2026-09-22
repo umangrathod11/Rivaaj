@@ -205,27 +205,27 @@
   </header>
 
   <!-- Breadcrumb -->
-  <div style="background: var(--c-bg-cream); padding: 14px 0; border-bottom: 1px solid var(--c-border-subtle); font-size: 0.85rem;">
-    <div class="container">
-      <a href="index.html" style="color: var(--c-text-muted);">Home</a> <span style="margin: 0 8px; color: var(--c-gold-500);">&gt;</span>
-      <a href="shop.html" style="color: var(--c-text-muted);">Wholesale Catalog</a> <span style="margin: 0 8px; color: var(--c-gold-500);">&gt;</span>
-      <a id="breadcrumbCategory" href="shop.html" style="color: var(--c-text-muted);">Category</a> <span style="margin: 0 8px; color: var(--c-gold-500);">&gt;</span>
+  <div style="background: var(--c-bg-cream); padding: 10px 0; border-bottom: 1px solid var(--c-border-subtle); font-size: 0.82rem; overflow: hidden;">
+    <div class="container" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+      <a href="index.html" style="color: var(--c-text-muted);">Home</a> <span style="margin: 0 6px; color: var(--c-gold-500);">&gt;</span>
+      <a href="shop.html" style="color: var(--c-text-muted);">Catalog</a> <span style="margin: 0 6px; color: var(--c-gold-500);">&gt;</span>
+      <a id="breadcrumbCategory" href="shop.html" style="color: var(--c-text-muted);">Category</a> <span style="margin: 0 6px; color: var(--c-gold-500);">&gt;</span>
       <strong id="breadcrumbTitle" style="color: var(--c-emerald-950);">Product Name</strong>
     </div>
   </div>
 
   <!-- Product Detail Section -->
-  <section class="product-detail-section">
+  <section class="product-detail-section" style="padding: 20px 0 40px;">
     <div class="container">
       <div id="productDetailContainer" class="product-detail-grid">
         <!-- Rendered via JS -->
       </div>
 
       <!-- Related Products Section -->
-      <div style="margin-top: 80px; padding-top: 50px; border-top: 1px solid var(--c-border-subtle);">
-        <div class="section-header text-left">
+      <div style="margin-top: 40px; padding-top: 30px; border-top: 1px solid var(--c-border-subtle);">
+        <div class="section-header text-left" style="margin-bottom: 20px;">
           <div class="eyebrow no-after">Similar Wholesale Styles</div>
-          <h3 class="section-title" style="font-size: 1.8rem;">You May Also Like for Your Boutique</h3>
+          <h3 class="section-title" style="font-size: 1.6rem;">You May Also Like</h3>
         </div>
         <div id="relatedProductsGrid" class="products-grid">
           <!-- Rendered via JS -->
@@ -442,11 +442,11 @@
           <h1 class="detail-product-title">${product.title || product.name}</h1>
           
           <div class="detail-price-box">
-            <div style="display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap;">
-              <span style="font-size: 2.2rem; font-weight: 800; color: var(--c-emerald-950);">
-                ₹${product.price.toLocaleString('en-IN')} <span style="font-size: 0.9rem; font-weight: 500; color: var(--c-text-secondary);">/ Pc + 5% GST</span>
+            <div style="display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap;">
+              <span style="font-size: clamp(1.4rem, 5vw, 2.2rem); font-weight: 800; color: var(--c-emerald-950);">
+                ₹${product.price.toLocaleString('en-IN')} <span style="font-size: 0.85rem; font-weight: 500; color: var(--c-text-secondary);">/ Pc + 5% GST</span>
               </span>
-              <span style="text-decoration: line-through; font-size: 1.15rem; color: var(--c-text-muted);">
+              <span style="text-decoration: line-through; font-size: 1rem; color: var(--c-text-muted);">
                 ₹${(product.mrp || product.originalPrice).toLocaleString('en-IN')}
               </span>
               <span style="background: #e8f5ee; color: #127546; padding: 3px 10px; border-radius: 4px; font-weight: 700; font-size: 0.82rem;">
@@ -531,18 +531,18 @@
           </div>
 
           <!-- Trust Badges -->
-          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 10px; padding: 16px; background: #fff; border: 1px solid var(--c-border-subtle); border-radius: 8px; text-align: center;">
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; padding: 12px; background: #fff; border: 1px solid var(--c-border-subtle); border-radius: 8px; text-align: center;">
             <div>
-              <i class="fa-solid fa-truck text-gold" style="font-size: 1.2rem;"></i>
-              <div style="font-size: 0.75rem; font-weight: 700; margin-top: 4px;">Fast Transport</div>
+              <i class="fa-solid fa-truck text-gold" style="font-size: 1.1rem;"></i>
+              <div style="font-size: 0.7rem; font-weight: 700; margin-top: 4px;">Fast Transport</div>
             </div>
             <div>
-              <i class="fa-solid fa-hand-holding-dollar text-gold" style="font-size: 1.2rem;"></i>
-              <div style="font-size: 0.75rem; font-weight: 700; margin-top: 4px;">Best Surat Rate</div>
+              <i class="fa-solid fa-hand-holding-dollar text-gold" style="font-size: 1.1rem;"></i>
+              <div style="font-size: 0.7rem; font-weight: 700; margin-top: 4px;">Best Surat Rate</div>
             </div>
             <div>
-              <i class="fa-solid fa-shield text-gold" style="font-size: 1.2rem;"></i>
-              <div style="font-size: 0.75rem; font-weight: 700; margin-top: 4px;">100% QC Passed</div>
+              <i class="fa-solid fa-shield text-gold" style="font-size: 1.1rem;"></i>
+              <div style="font-size: 0.7rem; font-weight: 700; margin-top: 4px;">100% QC Passed</div>
             </div>
           </div>
 

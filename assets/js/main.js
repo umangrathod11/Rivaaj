@@ -431,19 +431,11 @@ function initMobileNavigation() {
     
     // Dynamic Main Categories
     const catList = typeof RIVAAZ_CATEGORIES !== 'undefined' ? RIVAAZ_CATEGORIES : [];
-    const brandList = typeof RIVAAZ_BRANDS !== 'undefined' ? RIVAAZ_BRANDS : [];
 
     const categoriesHtml = catList.map(c => `
       <a href="shop.html?category=${encodeURIComponent(c.id)}" class="drawer-subitem">
         <span>${c.name}</span>
         <span class="dropdown-badge">${c.count}</span>
-      </a>
-    `).join('');
-
-    const brandsHtml = brandList.map(b => `
-      <a href="shop.html?brand=${encodeURIComponent(b.code)}" class="drawer-subitem">
-        <span>${b.name}</span>
-        <span class="dropdown-badge">${b.count}</span>
       </a>
     `).join('');
 
@@ -475,17 +467,6 @@ function initMobileNavigation() {
             <a href="shop.html" class="drawer-subitem" style="color: var(--c-gold-600); font-weight: 700; margin-top: 6px;">
               <span>View All Categories &rarr;</span>
             </a>
-          </div>
-        </div>
-
-        <!-- Brand Collections -->
-        <div class="drawer-dropdown">
-          <div class="drawer-link drawer-dropdown-toggle" onclick="toggleDrawerCategory(this)">
-            <span><i class="fa-solid fa-layer-group text-gold"></i> Brand Collections</span>
-            <i class="fa-solid fa-chevron-down drawer-arrow"></i>
-          </div>
-          <div class="drawer-submenu">
-            ${brandsHtml}
           </div>
         </div>
 
